@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreArticleRequest;
+use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
 
@@ -27,18 +28,31 @@ class ArticleController extends Controller
 
         $article->title = $request->title;
         $article->content = $request->content;
+        $article->status = $request->status;
+        $article->summary = $request->summary;
+        $article->author_id = $request->authorId;
+        $article->category_id = $request->categoryId;
+        $article->image_id = $request->imageId;
+        $article->municipality_id = $request->municipalityId;
 
         $article->save();
 
         return response()->json($article, 201);
     }
-
+    
     /**
      * Display the specified resource.
      */
     public function show(Article $article)
     {
-        return response()->json($article);
+        $article->load([
+            'image',
+            'author',
+            'category',
+            'municipality'
+        ]);
+
+        return response()->json(new ArticleResource($article));
     }
 
     /**
@@ -48,6 +62,15 @@ class ArticleController extends Controller
     {
         $article->title = $request->title;
         $article->content = $request->content;
+        $article->status = $request->status;
+        $article->summary = $request->summary;
+        $article->published_at = $request->publishedAt;
+        /*TODO: Fix this when update    
+        $article->author_id = $request->authorId;
+        $article->category_id = $request->categoryId;
+        $article->image_id = $request->imageId;
+        $article->municipality_id = $request->municipalityId;
+        */
 
         $article->save();
     }

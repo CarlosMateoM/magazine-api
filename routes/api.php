@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\MunicipalityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +26,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('v1')->group(function () {
 
     Route::resource('articles', ArticleController::class);
+    Route::resource('categories', CategoryController::class);
+    Route::resource('departments', DepartmentController::class);
+    Route::resource('municipalities', MunicipalityController::class);
+
+    Route::get('images', [ImageController::class, 'index']);
+    Route::post('images', [ImageController::class, 'store']);
     
     
 });
