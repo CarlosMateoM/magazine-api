@@ -25,13 +25,13 @@ class ImageController extends Controller
     public function index()
     {
         $images = QueryBuilder::for(Image::class)
-            ->allowedFilters(['name','description','hash'])
-            ->allowedSorts(['name', 'description'])
-            ->paginate(5);
+            ->allowedFilters(['name'])
+            ->allowedSorts(['name'])
+            ->paginate(6);
 
-        return response()->json([
+        return response()->json(
             $images
-        ]);
+        );
     }
 
     /**
@@ -44,7 +44,6 @@ class ImageController extends Controller
         $blobName = uniqid() . '.' . $file->getClientOriginalExtension();
 
         $response = $this->azureBlobService->uploadBlob($blobName, $file);
-
 
         $image = Image::create([
             'name' => $request->name,
@@ -62,7 +61,7 @@ class ImageController extends Controller
      */
     public function show(Image $image)
     {
-        //
+        return response()->json(new ImageResource($image));
     }
 
     /**

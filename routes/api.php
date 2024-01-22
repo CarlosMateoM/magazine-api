@@ -32,6 +32,7 @@ Route::prefix('v1')->group(function () {
 
     Route::get('images', [ImageController::class, 'index']);
     Route::post('images', [ImageController::class, 'store']);
+    Route::get('images/{image}', [ImageController::class, 'show']);
     
     
 });

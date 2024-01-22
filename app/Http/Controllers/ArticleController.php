@@ -32,7 +32,7 @@ class ArticleController extends Controller
         $article->summary = $request->summary;
         $article->author_id = $request->authorId;
         $article->category_id = $request->categoryId;
-        $article->image_id = $request->imageId;
+        $article->image_id = $request->image['id'];
         $article->municipality_id = $request->municipalityId;
 
         $article->save();
