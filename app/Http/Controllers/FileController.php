@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreImageRequest;
-use App\Http\Requests\UpdateImageRequest;
-use App\Http\Resources\ImageResource;
-use App\Models\Image;
+use App\Http\Requests\StoreFileRequest;
+use App\Http\Requests\UpdateFileRequest;
+use App\Http\Resources\FileResource;
+use App\Models\File;
 use App\Services\AzureBlobService;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class ImageController extends Controller
+class FileController extends Controller
 {
     private $azureBlobService;
 
@@ -24,13 +24,13 @@ class ImageController extends Controller
      */
     public function index()
     {
-        $images = QueryBuilder::for(Image::class)
-            ->allowedFilters(['name'])
+        $files = QueryBuilder::for(File::class)
+            ->allowedFilters(['name', 'type'])
             ->allowedSorts(['name'])
             ->paginate(6);
 
         return response()->json(
-            $images
+            $files
         );
     }
 
@@ -39,35 +39,39 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        $file = $request->file('image');
+        $file = $request->file('file');
+
+        $fileType = explode('/', $file->getMimeType());
 
         $blobName = uniqid() . '.' . $file->getClientOriginalExtension();
 
         $response = $this->azureBlobService->uploadBlob($blobName, $file);
 
-        $image = Image::create([
-            'name' => $request->name,
-            'hash' => $response['hash'],
-            'url' => $response['url'],
-            'description' => $request->description,
-        ]);
+        $fileStored = new File();
 
+        $fileStored->name = $request->name;
+        $fileStored->hash = $response['hash'];
+        $fileStored->url = $response['url'];
+        $fileStored->type = $fileType[0];  
+        $fileStored->description = $request->description;
 
-        return response()->json($image, 201);
+        $fileStored->save();
+        
+        return response()->json($fileStored, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Image $image)
+    public function show(File $File)
     {
-        return response()->json(new ImageResource($image));
+        return response()->json(new FileResource($File));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateImageRequest $request, Image $image)
+    public function update(UpdateFileRequest $request, File $File)
     {
         //
     }
@@ -75,7 +79,7 @@ class ImageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Image $image)
+    public function destroy(File $File)
     {
         //
     }

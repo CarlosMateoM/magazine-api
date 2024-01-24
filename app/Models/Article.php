@@ -17,7 +17,7 @@ class Article extends Model
         'published_at',
         'author_id',
         'category_id',
-        'image_id',
+        'file_id',
         'municipality_id',
     ];
 
@@ -29,8 +29,8 @@ class Article extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function image(){
-        return $this->belongsTo(Image::class);
+    public function file(){
+        return $this->belongsTo(File::class);
     }
 
     public function municipality(){

@@ -16,7 +16,9 @@ class ArticleController extends Controller
     {
         $articles = Article::all();
         
-        return response()->json(['articles' => $articles]);
+        return response()->json([
+            'articles' => ArticleResource::collection($articles)
+        ]);
     }
 
     /**
@@ -32,7 +34,7 @@ class ArticleController extends Controller
         $article->summary = $request->summary;
         $article->author_id = $request->authorId;
         $article->category_id = $request->categoryId;
-        $article->image_id = $request->image['id'];
+        $article->file_id = $request->fileId;
         $article->municipality_id = $request->municipalityId;
 
         $article->save();
@@ -46,7 +48,7 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $article->load([
-            'image',
+            'file',
             'author',
             'category',
             'municipality'
@@ -65,14 +67,25 @@ class ArticleController extends Controller
         $article->status = $request->status;
         $article->summary = $request->summary;
         $article->published_at = $request->publishedAt;
-        /*TODO: Fix this when update    
-        $article->author_id = $request->authorId;
-        $article->category_id = $request->categoryId;
-        $article->image_id = $request->imageId;
+        $article->file_id = $request->image['id'];
+        $article->category_id = $request->category['id'];
+        
+        /*
+        TODO: Fix this when update    
+        $article->author_id = $request->author['id'];
         $article->municipality_id = $request->municipalityId;
         */
 
         $article->save();
+
+        $article->load([
+            'file',
+            'author',
+            'category',
+            'municipality'
+        ]);
+
+        return response()->json(new ArticleResource($article), 200);
     }
 
     /**

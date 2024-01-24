@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('municipalities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('departament_id')->nullable()->constrained('departaments');
+            $table->foreignId('department_id')->nullable()->constrained('departments');
             $table->timestamps();
         });
     }

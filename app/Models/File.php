@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Image extends Model
+class File extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'hash', 'url', 'description'];
+    protected $fillable = ['name', 'hash', 'type', 'url', 'description'];
 }

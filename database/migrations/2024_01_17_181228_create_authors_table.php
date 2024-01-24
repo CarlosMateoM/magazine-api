@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('biography');
-            $table->foreignId('image_id')->nullable()->constrained('images');
+            $table->foreignId('file_id')->nullable()->constrained('files');
             $table->timestamps();
         });
     }

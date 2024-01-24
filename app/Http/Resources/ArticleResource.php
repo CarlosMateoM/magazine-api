@@ -14,17 +14,23 @@ class ArticleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'title' => $this->title,
-            'content' =>$this->content,
+            'content' => '',
             'status' =>$this->status,
-            'summary' =>$this->summary,
+            'summary' => $this->summary,
             'publishedAt' =>$this->published_at,
-            'image' => new ImageResource($this->whenLoaded('image')),
+            'image' => new FileResource($this->whenLoaded('file')),
             'category' => new CategoryResource($this->whenLoaded('category')),
 
         ];
+
+        if ($request->has('includeContent')) {
+            $data['content'] = $this->content;
+        }
+
+        return $data;
     }
 }
 
