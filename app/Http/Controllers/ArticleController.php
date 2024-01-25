@@ -8,7 +8,7 @@ use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class ArticleController extends Controller
@@ -22,14 +22,7 @@ class ArticleController extends Controller
         $query = QueryBuilder::for(Article::class)
             ->allowedFilters([
                 'title',
-                'content',
                 AllowedFilter::exact('status'),
-                'summary',
-                'published_at',
-                'author_id',
-                'category_id',
-                'file_id',
-                'municipality_id'
             ])
             ->allowedIncludes([
                 'file',
@@ -61,6 +54,7 @@ class ArticleController extends Controller
         $article->author_id = $request->authorId;
         $article->category_id = $request->categoryId;
         $article->file_id = $request->fileId;
+        $article->slug = Str::slug($request->title);
         $article->municipality_id = $request->municipalityId;
 
         $article->save();
@@ -77,7 +71,7 @@ class ArticleController extends Controller
             'file',
             'author',
             'category',
-            'municipality'
+            'municipality.department'
         ]);
 
         return response()->json(new ArticleResource($article));
@@ -92,8 +86,8 @@ class ArticleController extends Controller
         $article->content = $request->content;
         $article->status = $request->status;
         $article->summary = $request->summary;
-        Log::info('Valor de status antes de llamar a updatePublishedAt: ' . $article->status);
-        $article->updatePublishedAt();       
+        $article->updatePublishedAt();
+        $article->slug = Str::slug($request->title);       
         $article->file_id = $request->image['id'];
         $article->category_id = $request->category['id'];
 
