@@ -21,6 +21,8 @@ class Article extends Model
         'municipality_id',
     ];
 
+    protected $dates = ['published_at'];
+
     public function author(){
         return $this->belongsTo(Author::class);
     }
@@ -37,5 +39,10 @@ class Article extends Model
         return $this->belongsTo(Municipality::class);
     }
 
+    public function updatePublishedAt(){
+        if($this->published_at == null && $this->status == 'PUBLISHED'){ 
+            $this->published_at = now();
+        } 
+    }
     
 }

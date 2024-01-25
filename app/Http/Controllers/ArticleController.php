@@ -3,28 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Facades\Log;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class ArticleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::all();
-        
-        return response()->json([
-            'articles' => ArticleResource::collection($articles)
-        ]);
+
+        $query = QueryBuilder::for(Article::class)
+            ->allowedFilters([
+                'title',
+                'content',
+                AllowedFilter::exact('status'),
+                'summary',
+                'published_at',
+                'author_id',
+                'category_id',
+                'file_id',
+                'municipality_id'
+            ])
+            ->allowedIncludes([
+                'file',
+                'author',
+                'category',
+                'municipality'
+            ]);
+
+        if ($request->has('paginate')) {
+            $query = $query->paginate($request->paginate);
+        } else  {
+            $query = ArticleResource::collection($query->get());
+        }
+
+        return response()->json($query);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreArticleRequest $request)
     {
         $article = new Article();
 
@@ -41,7 +67,7 @@ class ArticleController extends Controller
 
         return response()->json($article, 201);
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -60,21 +86,16 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Article $article)
+    public function update(UpdateArticleRequest $request, Article $article)
     {
         $article->title = $request->title;
         $article->content = $request->content;
         $article->status = $request->status;
         $article->summary = $request->summary;
-        $article->published_at = $request->publishedAt;
+        Log::info('Valor de status antes de llamar a updatePublishedAt: ' . $article->status);
+        $article->updatePublishedAt();       
         $article->file_id = $request->image['id'];
         $article->category_id = $request->category['id'];
-        
-        /*
-        TODO: Fix this when update    
-        $article->author_id = $request->author['id'];
-        $article->municipality_id = $request->municipalityId;
-        */
 
         $article->save();
 

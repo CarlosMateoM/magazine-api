@@ -23,12 +23,14 @@ class ArticleResource extends JsonResource
             'publishedAt' =>$this->published_at,
             'image' => new FileResource($this->whenLoaded('file')),
             'category' => new CategoryResource($this->whenLoaded('category')),
+            'municipality' => new MunicipalityResource($this->whenLoaded('municipality')),
 
         ];
 
         if ($request->has('includeContent')) {
             $data['content'] = $this->content;
         }
+
 
         return $data;
     }

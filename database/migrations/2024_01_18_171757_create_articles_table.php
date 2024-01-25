@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
+            $table->text('summary');
+            $table->string('slug')->unique();
             $table->enum('status', ['draft', 'published', 'unpublished'])->default('draft');    
-            $table->string('summary');//CHANGE TO TEXT
             $table->date('published_at')->nullable();
             $table->foreignId('author_id')->nullable()->constrained('authors');
             $table->foreignId('file_id')->nullable()->constrained('files');

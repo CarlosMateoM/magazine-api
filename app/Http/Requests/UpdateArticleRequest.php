@@ -11,7 +11,7 @@ class UpdateArticleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,30 @@ class UpdateArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string',
+            'content' => 'required|string',
+            'status' => 'required|string|in:DRAFT,PUBLISHED,UNPUBLISHED',
+            'summary' => 'required|string',
+            'publishedAt' => 'nullable|date',
+            'image.id' => 'required|integer|exists:files,id',
+            'category.id'  => 'required|integer|exists:categories,id',
+            //'municipality.id' =>  'required|integer|exists:municipalities,id'
+          
         ];
     }
 }
+
+/*
+        $article->title = $request->title;
+        $article->content = $request->content;
+        $article->status = $request->status;
+        $article->summary = $request->summary;
+        $article->published_at = $request->publishedAt;
+        $article->file_id = $request->image['id'];
+        $article->category_id = $request->category['id'];
+        
+        /*
+        TODO: Fix this when update    
+        $article->author_id = $request->author['id'];
+        $article->municipality_id = $request->municipalityId;
+*/

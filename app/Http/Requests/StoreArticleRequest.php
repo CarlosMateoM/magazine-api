@@ -23,7 +23,15 @@ class StoreArticleRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'content' => 'required'
+            'content' => 'required',
+            'summary' => 'required',
+            'categoryId' => 'required|exists:categories,id',
+            'fileId' => 'required|exists:files,id',
+            'municipalityId' => 'required|exists:municipalities,id',
         ];
     }
 }
+
+/*  COMING SOON V2
+    $article->author_id = $request->authorId;
+*/
