@@ -67,8 +67,12 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Article $article)
+    public function show($article)
     {
+        $article = Article::Where('id',$article)
+            ->orWhere('slug', $article)
+            ->firstOrFail();
+
         $article->load([
             'file',
             'author',
