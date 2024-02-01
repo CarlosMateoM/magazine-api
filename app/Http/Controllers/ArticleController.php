@@ -2,61 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreArticleRequest;
+use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $articles = Article::all();
-        
-        return response()->json(['articles' => $articles]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $article = new Article();
-
-        $article->title = $request->title;
-        $article->content = $request->content;
-
-        $article->save();
-
-        return response()->json($article, 201);
-    }
 
     /**
      * Display the specified resource.
      */
-    public function show(Article $article)
+    public function show(String $slug, Request $request)
     {
-        return response()->json($article);
-    }
+        $article = Article::where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Article $article)
-    {
-        $article->title = $request->title;
-        $article->content = $request->content;
+        $article->load([
+            'file',
+            'author',
+            'category',
+            'municipality.department'
+        ]);
 
-        $article->save();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Article $article)
-    {
-        $article->delete();
+        return response()->json(new ArticleResource($article));
     }
 }
