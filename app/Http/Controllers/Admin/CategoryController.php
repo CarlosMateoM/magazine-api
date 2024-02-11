@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -38,13 +39,21 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show($category)
     {
+        $category = Category::Where('id', $category)
+            ->orWhere('name', $category)
+            ->firstOrFail();
+
         $category->load([
-            'articles'
+            'articles' => function ($query) {
+                $query->orderBy('created_at', 'desc')->limit(5);
+            },
+            'articles.file',
+            'articles.municipality.department',
         ]);
 
-        return response()->json($category);
+        return response()->json( new CategoryResource($category));
     }
 
 
@@ -62,7 +71,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
-        
+
         return response()->json(null, 204);
     }
 }
