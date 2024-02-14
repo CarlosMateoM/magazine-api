@@ -7,7 +7,6 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -40,26 +39,21 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($category, Request $request)
+    public function show($category)
     {
         $category = Category::Where('id', $category)
             ->orWhere('name', $category)
             ->firstOrFail();
 
         $category->load([
-            'articles' => function ($query) use ($request) {
-
-                $query->orderBy('created_at', 'desc');
-
-                if ($request->has('limit') && is_numeric($request->limit) && $request->limit > 0) {
-                    $query->limit($request->limit);
-                }
-                
-                $query->with(['file', 'category', 'municipality.department']);
+            'articles' => function ($query) {
+                $query->orderBy('created_at', 'desc')->limit(5);
             },
+            'articles.file',
+            'articles.municipality.department',
         ]);
 
-        return response()->json(new CategoryResource($category));
+        return response()->json( new CategoryResource($category));
     }
 
 
@@ -68,12 +62,7 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category->name = $request->name;
-        $category->description = $request->description;
-
-        $category->save();
-
-        return response()->json($category, 200);
+        //
     }
 
     /**
