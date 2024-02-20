@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
+use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
@@ -24,6 +25,8 @@ class ArticleController extends Controller
             ->allowedFilters([
                 'title',
                 'published_at',
+                'category.name',
+                AllowedFilter::exact('sections.name'),
                 AllowedFilter::exact('status'),
             ])
             ->allowedIncludes([
@@ -34,12 +37,13 @@ class ArticleController extends Controller
             ]);
 
         if ($request->has('paginate')) {
-            $query = $query->paginate($request->paginate);
-        } else  {
-            $query = ArticleResource::collection($query->get());
+            $articles = $query->paginate($request->paginate);
+            return response()->json(
+                new ArticleCollection($articles)
+            );
+        } else {
+            return response()->json(ArticleResource::collection($query->get()));
         }
-
-        return response()->json($query);
     }
 
     /**
@@ -69,7 +73,7 @@ class ArticleController extends Controller
      */
     public function show($article)
     {
-        $article = Article::Where('id',$article)
+        $article = Article::Where('id', $article)
             ->orWhere('slug', $article)
             ->firstOrFail();
 
@@ -77,6 +81,7 @@ class ArticleController extends Controller
             'file',
             'author',
             'category',
+            'sections',
             'municipality.department'
         ]);
 
@@ -93,7 +98,7 @@ class ArticleController extends Controller
         $article->status = $request->status;
         $article->summary = $request->summary;
         $article->updatePublishedAt();
-        $article->slug = Str::slug($request->title);       
+        $article->slug = Str::slug($request->title);
         $article->file_id = $request->image['id'];
         $article->category_id = $request->category['id'];
 
