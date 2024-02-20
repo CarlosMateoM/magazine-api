@@ -22,6 +22,7 @@ class ArticleResource extends JsonResource
             'status' =>$this->status,
             'summary' => $this->summary,
             'publishedAt' =>$this->published_at,
+            'author' => new AuthorResource($this->whenLoaded('author')),
             'image' => new FileResource($this->whenLoaded('file')),
             'category' => new CategoryResource($this->whenLoaded('category')),
             'municipality' => new MunicipalityResource($this->whenLoaded('municipality')),

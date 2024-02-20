@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\FileController;
 use App\Http\Controllers\Admin\MunicipalityController;
+use App\Http\Controllers\ArticleSectionController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
@@ -35,13 +37,15 @@ Route::prefix('v1')->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout']);
         
         Route::resource('files', FileController::class);
+        Route::resource('sections', SectionController::class);
         Route::resource('articles', ArticleController::class);
         Route::resource('categories', CategoryController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('municipalities', MunicipalityController::class);
+        Route::resource('articles/sections', ArticleSectionController::class);
         
         
-        Route::get('articles/{slug}/slug', [App\Http\Controllers\ArticleController::class, 'show']);
+
     }); 
 });
 
