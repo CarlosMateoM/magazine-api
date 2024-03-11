@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 

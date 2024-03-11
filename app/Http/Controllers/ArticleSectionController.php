@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreArticleSectionRequest;
-use App\Models\Article;
 use App\Models\ArticleSection;
 use Illuminate\Http\Request;
 

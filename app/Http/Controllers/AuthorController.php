@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAuthorRequest;
 use App\Http\Requests\UpdateAuthorRequest;
 use App\Http\Resources\AuthorResource;
 use App\Models\Author;
 use Spatie\QueryBuilder\QueryBuilder;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthorController extends Controller
 {
