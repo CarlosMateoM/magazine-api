@@ -1,16 +1,18 @@
 <?php
 
-use App\Http\Controllers\Admin\ArticleController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\DepartmentController;
-use App\Http\Controllers\Admin\FileController;
-use App\Http\Controllers\Admin\MunicipalityController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\ArticleSectionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\UserController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,18 +27,21 @@ use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 Route::prefix('v1')->group(function () {
     
+    
     Route::post('auth/login', [AuthController::class, 'login']);
     Route::post('auth/register', [AuthController::class, 'register']);
-    Route::get('sanctum/csrf-cookie', [CsrfCookieController::class, 'show']);
+    
 
 
     Route::middleware('auth:sanctum')->group(function () {
 
-        Route::get('user', function (Request $request) {return $request->user();});
+        Route::get('user', function (Request $request) {
+            return $request->user()->load('role');
+        });
 
-        Route::post('auth/logout', [AuthController::class, 'logout']);
-        
+        Route::resource('users', UserController::class);
         Route::resource('files', FileController::class);
+        Route::resource('authors', AuthorController::class);
         Route::resource('sections', SectionController::class);
         Route::resource('articles', ArticleController::class);
         Route::resource('categories', CategoryController::class);
@@ -44,7 +49,8 @@ Route::prefix('v1')->group(function () {
         Route::resource('municipalities', MunicipalityController::class);
         Route::resource('articles/sections', ArticleSectionController::class);
         
-        
+
+        Route::post('auth/logout', [AuthController::class, 'logout']);        
 
     }); 
 });

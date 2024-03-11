@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id'
     ];
 
     /**
@@ -42,4 +44,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function role(){
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        $role = $this->role->name;
+
+        return in_array($role, $roles);
+    }
+
+    public function hasRole(string $role){
+        Log::info([$this->role->name, $role]);
+        return $this->role->name === $role;
+    }
+
+    public function hasPermission(Permission $permission){
+        return $this->role->permissions->contains($permission);
+    }
 }

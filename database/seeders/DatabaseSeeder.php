@@ -21,9 +21,8 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            CategorySeeder::class,
-            DepartmentSeeder::class,
-            MunicipalitySeeder::class
+            //PermissionSeeder::class,
+            RoleSeeder::class,
         ]);
     }
 }

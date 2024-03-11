@@ -14,6 +14,7 @@ class Article extends Model
         'slug',
         'content',
         'status',
+        'user_id',
         'summary',
         'published_at',
         'author_id',
@@ -23,6 +24,10 @@ class Article extends Model
     ];
 
     protected $dates = ['published_at'];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }   
 
     public function author(){
         return $this->belongsTo(Author::class);
@@ -42,6 +47,10 @@ class Article extends Model
 
     public function municipality(){
         return $this->belongsTo(Municipality::class);
+    }
+
+    public function isPublished(){
+        return $this->status === 'PUBLISHED';
     }
 
     public function updatePublishedAt(){

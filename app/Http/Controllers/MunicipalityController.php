@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMunicipalityRequest;
 use App\Http\Requests\UpdateMunicipalityRequest;
 use App\Models\Municipality;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class MunicipalityController extends Controller
 {
@@ -15,9 +16,12 @@ class MunicipalityController extends Controller
      */
     public function index()
     {
-        $municipalities = Municipality::all();
+        $query = QueryBuilder::for(Municipality::class)
+                ->allowedFilters([
+                    'department_id'
+                ]);
 
-        return response()->json(['municipalities' => $municipalities]); 
+        return response()->json($query->get()); 
     }
 
 
