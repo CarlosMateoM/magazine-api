@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArticleRequest;
@@ -13,8 +13,10 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
 
+
 class ArticleController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -26,6 +28,7 @@ class ArticleController extends Controller
                 'title',
                 'published_at',
                 'category.name',
+                'user.id',
                 AllowedFilter::exact('sections.name'),
                 AllowedFilter::exact('status'),
             ])
@@ -36,13 +39,20 @@ class ArticleController extends Controller
                 'municipality'
             ]);
 
+        if ($request->user()->hasRole('reader')) {
+            $query->where('status', 'published');
+        }
+
+
         if ($request->has('paginate')) {
             $articles = $query->paginate($request->paginate);
             return response()->json(
                 new ArticleCollection($articles)
             );
         } else {
-            return response()->json(ArticleResource::collection($query->get()));
+            return response()->json(
+                ArticleResource::collection($query->get())
+            );
         }
     }
 
@@ -51,17 +61,21 @@ class ArticleController extends Controller
      */
     public function store(StoreArticleRequest $request)
     {
+        $this->authorize('create', Article::class, $request->user());
+
         $article = new Article();
 
         $article->title = $request->title;
-        $article->content = $request->content;
         $article->status = $request->status;
         $article->summary = $request->summary;
-        $article->author_id = $request->authorId;
-        $article->category_id = $request->categoryId;
-        $article->file_id = $request->fileId;
+        $article->content = $request->content;
         $article->slug = Str::slug($request->title);
-        $article->municipality_id = $request->municipalityId;
+
+        $article->user_id = $request->user()->id;
+        $article->file_id = $request->image['id'];
+        $article->author_id = $request->author['id'];
+        $article->category_id = $request->category['id'];
+        $article->municipality_id = $request->municipality['id'];
 
         $article->save();
 
@@ -71,7 +85,7 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($article)
+    public function show($article, Request $request)
     {
         $article = Article::Where('id', $article)
             ->orWhere('slug', $article)
@@ -85,6 +99,11 @@ class ArticleController extends Controller
             'municipality.department'
         ]);
 
+        if ($request->user()->hasRole('reader') && $article->isPublished()) {
+            $article->Fail();
+            //throw new NotFoundHttpException('No query results for model.');
+        }
+
         return response()->json(new ArticleResource($article));
     }
 
@@ -93,22 +112,28 @@ class ArticleController extends Controller
      */
     public function update(UpdateArticleRequest $request, Article $article)
     {
+        $this->authorize('update', $article, $request->user());
+
         $article->title = $request->title;
         $article->content = $request->content;
         $article->status = $request->status;
         $article->summary = $request->summary;
-        $article->updatePublishedAt();
         $article->slug = Str::slug($request->title);
+        
         $article->file_id = $request->image['id'];
+        $article->author_id = $request->author['id'];
         $article->category_id = $request->category['id'];
+        $article->municipality_id = $request->municipality['id'];
 
+        $article->updatePublishedAt();
+        
         $article->save();
 
         $article->load([
             'file',
             'author',
             'category',
-            'municipality'
+            'municipality.department'
         ]);
 
         return response()->json(new ArticleResource($article), 200);

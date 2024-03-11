@@ -1,28 +1,50 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAuthorRequest;
 use App\Http\Requests\UpdateAuthorRequest;
+use App\Http\Resources\AuthorResource;
 use App\Models\Author;
+use Spatie\QueryBuilder\QueryBuilder;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthorController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Author::class, 'author');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $query = QueryBuilder::for(Author::class)
+            ->filterByName()
+            ->allowedIncludes(['file', 'articles']);
+
+        
+        return response()->json(AuthorResource::collection($query->get()));
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreAuthorRequest $request)
-    {
-        //
+    {    
+        $author = new Author();
+
+        $author->first_name = $request->firstName;
+        $author->last_name = $request->lastName;
+        $author->biography = '';
+
+        $author->save();
+
+        return response()->json(new AuthorResource($author), 201);
     }
 
     /**

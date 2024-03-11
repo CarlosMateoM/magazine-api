@@ -18,6 +18,10 @@ class AuthorResource extends JsonResource
             'id' => $this->id,
             'firstName' => $this->first_name,
             'lastName' => $this->last_name,
+            'biography' => $this->biography,
+            'articlesCount' => $this->articles_count,
+            'articles' => ArticleResource::collection($this->whenLoaded('articles')),
+            'image' => new FileResource($this->whenLoaded('file')),
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
@@ -9,6 +9,7 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class CategoryController extends Controller
 {
@@ -17,9 +18,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $query = QueryBuilder::for(Category::class)
+            ->allowedFilters('name')
+            ->allowedIncludes('articles');
 
-        return response()->json(['categories' => $categories]);
+        return response()->json(CategoryResource::collection($query->get()));
     }
 
     /**
@@ -51,10 +54,14 @@ class CategoryController extends Controller
 
                 $query->orderBy('created_at', 'desc');
 
+                if ($request->user()->hasRole('reader')) {
+                    $query->where('status', 'published');
+                }
+
                 if ($request->has('limit') && is_numeric($request->limit) && $request->limit > 0) {
                     $query->limit($request->limit);
                 }
-                
+
                 $query->with(['file', 'category', 'municipality.department']);
             },
         ]);

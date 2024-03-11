@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDepartmentRequest;
@@ -17,7 +17,7 @@ class DepartmentController extends Controller
     {
         $departments = Department::all();
 
-        return response()->json(['departments' => $departments]);
+        return response()->json($departments);
     }
 
     /** 

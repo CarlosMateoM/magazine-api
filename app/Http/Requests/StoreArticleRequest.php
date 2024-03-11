@@ -25,13 +25,11 @@ class StoreArticleRequest extends FormRequest
             'title' => 'required',
             'content' => 'required',
             'summary' => 'required',
-            'categoryId' => 'required|exists:categories,id',
-            'fileId' => 'required|exists:files,id',
-            'municipalityId' => 'required|exists:municipalities,id',
+            'image.id' => 'required|exists:files,id',
+            'author.id' => 'required|exists:authors,id',
+            'category.id' => 'required|exists:categories,id',
+            'municipality.id' => 'required|exists:municipalities,id',
         ];
     }
 }
 
-/*  COMING SOON V2
-    $article->author_id = $request->authorId;
-*/

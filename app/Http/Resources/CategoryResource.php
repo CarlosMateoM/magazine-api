@@ -14,11 +14,23 @@ class CategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
-            'name' =>$this->name,
+            'name' => $this->name,
             'description' => $this->description,
             'articles' => ArticleResource::collection($this->whenLoaded('articles')),
         ];
+    
+        if(!$request->has('include')){
+            return $data;
+        }
+
+        $includes = explode(',', $request->include);
+        
+        if (in_array('articlesCount', $includes)) {
+            $data['articlesCount'] = $this->articles_count;
+        }
+    
+        return $data;
     }
 }

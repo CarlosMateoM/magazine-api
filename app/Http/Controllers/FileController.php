@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFileRequest;
@@ -27,7 +27,7 @@ class FileController extends Controller
     {
         $files = QueryBuilder::for(File::class)
             ->allowedFilters(['name', 'type'])
-            ->allowedSorts(['name'])
+            ->allowedSorts(['name', 'created_at'])
             ->paginate(6);
 
         return response()->json(
