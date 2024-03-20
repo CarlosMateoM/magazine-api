@@ -36,6 +36,11 @@ class ArticleController extends Controller
                 'author',
                 'category',
                 'municipality'
+            ])
+            ->allowedSorts([
+                'title',
+                'published_at',
+                'created_at'
             ]);
 
         if ($request->user()->hasRole('reader')) {
@@ -75,6 +80,8 @@ class ArticleController extends Controller
         $article->author_id = $request->author['id'];
         $article->category_id = $request->category['id'];
         $article->municipality_id = $request->municipality['id'];
+
+        $article->updatePublishedAt();
 
         $article->save();
 
