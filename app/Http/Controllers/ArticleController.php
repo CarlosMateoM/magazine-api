@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
-
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ArticleController extends Controller
 {
@@ -107,8 +107,7 @@ class ArticleController extends Controller
         ]);
 
         if ($request->user()->hasRole('reader') && $article->isPublished()) {
-            $article->Fail();
-            //throw new NotFoundHttpException('No query results for model.');
+            throw new NotFoundHttpException('No query results for model.');
         }
 
         return response()->json(new ArticleResource($article));
