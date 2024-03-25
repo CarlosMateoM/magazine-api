@@ -101,8 +101,9 @@ class ArticleController extends Controller
         $article->load([
             'file',
             'author',
-            'category',
             'sections',
+            'category',
+            'galleries.file',
             'municipality.department'
         ]);
 
