@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
-
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ArticleController extends Controller
 {
@@ -35,7 +35,8 @@ class ArticleController extends Controller
                 'file',
                 'author',
                 'category',
-                'municipality'
+                'municipality',
+                'advertisements.file'
             ])
             ->allowedSorts([
                 'title',
@@ -100,14 +101,15 @@ class ArticleController extends Controller
         $article->load([
             'file',
             'author',
-            'category',
             'sections',
-            'municipality.department'
+            'category',
+            'galleries.file',
+            'municipality.department',
+            'advertisements.advertisement.files.file'
         ]);
 
         if ($request->user()->hasRole('reader') && $article->isPublished()) {
-            $article->Fail();
-            //throw new NotFoundHttpException('No query results for model.');
+            throw new NotFoundHttpException('No query results for model.');
         }
 
         return response()->json(new ArticleResource($article));
@@ -150,6 +152,8 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        $this->authorize('delete', $article, request()->user());
+
         $article->delete();
     }
 }

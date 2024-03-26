@@ -8,6 +8,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\ArticleSectionController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\UserController;
 
@@ -44,6 +45,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('authors', AuthorController::class);
         Route::resource('sections', SectionController::class);
         Route::resource('articles', ArticleController::class);
+        Route::resource('galleries', GalleryController::class);
         Route::resource('categories', CategoryController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('municipalities', MunicipalityController::class);

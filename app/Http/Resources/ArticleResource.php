@@ -24,9 +24,10 @@ class ArticleResource extends JsonResource
             'publishedAt' =>$this->published_at,
             'author' => new AuthorResource($this->whenLoaded('author')),
             'image' => new FileResource($this->whenLoaded('file')),
+            'gallery' => $this->whenLoaded('galleries', GalleryResource::collection($this->galleries)),
             'category' => new CategoryResource($this->whenLoaded('category')),
             'municipality' => new MunicipalityResource($this->whenLoaded('municipality')),
-
+            'advertisements' => $this->whenLoaded('advertisements', ArticleAdvertisementResource::collection($this->advertisements)),
         ];
 
         if ($request->has('includeContent')) {
