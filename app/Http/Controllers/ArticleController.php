@@ -36,7 +36,8 @@ class ArticleController extends Controller
                 'file',
                 'author',
                 'category',
-                'municipality'
+                'municipality',
+                'advertisements.file'
             ])
             ->allowedSorts([
                 'title',
@@ -104,7 +105,8 @@ class ArticleController extends Controller
             'sections',
             'category',
             'galleries.file',
-            'municipality.department'
+            'municipality.department',
+            'advertisements.advertisement.files.file'
         ]);
 
         if ($request->user()->hasRole('reader') && $article->isPublished()) {
@@ -151,6 +153,8 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        $this->authorize('delete', $article, request()->user());
+
         $article->delete();
     }
 }

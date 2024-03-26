@@ -53,6 +53,10 @@ class Article extends Model
         return $this->hasMany(Gallery::class);
     }
 
+    public function advertisements(){
+        return $this->hasMany(ArticleAdvertisement::class);
+    }
+
     public function isPublished(){
         return $this->status === 'PUBLISHED';
     }

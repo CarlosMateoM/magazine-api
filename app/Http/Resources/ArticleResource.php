@@ -27,7 +27,7 @@ class ArticleResource extends JsonResource
             'gallery' => $this->whenLoaded('galleries', GalleryResource::collection($this->galleries)),
             'category' => new CategoryResource($this->whenLoaded('category')),
             'municipality' => new MunicipalityResource($this->whenLoaded('municipality')),
-
+            'advertisements' => $this->whenLoaded('advertisements', ArticleAdvertisementResource::collection($this->advertisements)),
         ];
 
         if ($request->has('includeContent')) {
