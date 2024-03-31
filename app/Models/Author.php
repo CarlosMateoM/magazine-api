@@ -9,7 +9,12 @@ class Author extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['first_name', 'last_name', 'biography'];
+    protected $fillable = [
+        'file_id', 
+        'first_name', 
+        'last_name', 
+        'biography'
+    ];
 
 
     public function file(){

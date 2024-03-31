@@ -11,7 +11,7 @@ class UpdateAuthorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class UpdateAuthorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'image.id' => 'required|integer|exists:files,id',
         ];
     }
 }

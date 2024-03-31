@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
+use App\Models\Category;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Str;
@@ -34,7 +36,7 @@ class ArticleController extends Controller
             ])
             ->allowedIncludes([
                 'file',
-                'author',
+                'author.file',
                 'category',
                 'municipality',
                 'advertisements.file'
@@ -71,14 +73,23 @@ class ArticleController extends Controller
 
         $article = new Article();
 
+
+        if($request->category['id'] !== Category::where('name', 'opinion')->first()->id){
+        
+            $request->validate([
+                'image.id' => 'required|exists:files,id'
+            ]);
+
+            $article->file_id = $request->image['id'];
+        }
+    
+        
         $article->title = $request->title;
         $article->status = $request->status;
         $article->summary = $request->summary;
         $article->content = $request->content;
-        $article->slug = Str::slug($request->title);
-
         $article->user_id = $request->user()->id;
-        $article->file_id = $request->image['id'];
+        $article->slug = Str::slug($request->title);
         $article->author_id = $request->author['id'];
         $article->category_id = $request->category['id'];
         $article->municipality_id = $request->municipality['id'];
@@ -101,9 +112,9 @@ class ArticleController extends Controller
 
         $article->load([
             'file',
-            'author',
-            'sections',
             'category',
+            'sections',
+            'author.file',
             'galleries.file',
             'municipality.department',
             'advertisements.advertisement.files.file'
@@ -123,13 +134,23 @@ class ArticleController extends Controller
     {
         $this->authorize('update', $article, $request->user());
 
+
+        if($request->category['id'] !== Category::where('name', 'opinion')->first()->id){
+        
+            $request->validate([
+                'image.id' => 'required|exists:files,id'
+            ]);
+
+            $article->file_id = $request->image['id'];
+        }
+    
+
         $article->title = $request->title;
         $article->content = $request->content;
         $article->status = $request->status;
         $article->summary = $request->summary;
         $article->slug = Str::slug($request->title);
         
-        $article->file_id = $request->image['id'];
         $article->author_id = $request->author['id'];
         $article->category_id = $request->category['id'];
         $article->municipality_id = $request->municipality['id'];
