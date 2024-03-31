@@ -120,7 +120,7 @@ class ArticleController extends Controller
             'advertisements.advertisement.files.file'
         ]);
 
-        if ($request->user()->hasRole('reader') && $article->isPublished()) {
+        if ($request->user()->hasRole('reader') && !$article->isPublished()) {
             throw new NotFoundHttpException('No query results for model.');
         }
 

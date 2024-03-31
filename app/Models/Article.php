@@ -58,7 +58,7 @@ class Article extends Model
     }
 
     public function isPublished(){
-        return $this->status === 'PUBLISHED';
+        return $this->status === 'published';
     }
 
     public function updatePublishedAt(){
