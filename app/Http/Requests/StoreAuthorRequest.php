@@ -24,6 +24,7 @@ class StoreAuthorRequest extends FormRequest
         return [
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
+            'image.id' => 'required|integer|exists:files,id',
         ];
     }
 }

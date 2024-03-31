@@ -39,6 +39,7 @@ class AuthorController extends Controller
         $author->first_name = $request->firstName;
         $author->last_name = $request->lastName;
         $author->biography = '';
+        $author->file_id = $request->image['id'];
 
         $author->save();
 
@@ -58,7 +59,14 @@ class AuthorController extends Controller
      */
     public function update(UpdateAuthorRequest $request, Author $author)
     {
-        //
+        $author->first_name = $request->firstName;
+        $author->last_name = $request->lastName;
+        $author->biography = '';
+        $author->file_id = $request->image['id'];
+
+        $author->save();
+
+        return response()->json(new AuthorResource($author));
     }
 
     /**

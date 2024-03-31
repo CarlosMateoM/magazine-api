@@ -21,11 +21,16 @@ class StoreArticleRequest extends FormRequest
      */
     public function rules(): array
     {
+        /*
+        remove to improve flexibility of the request and validate in business logic
+        todo: add nullable to the fields that are not required in database
+        'content' => '',
+        'summary' => '',
+        'image.id' => '',
+        */
+
         return [
-            'title' => 'required',
-            'content' => 'required',
-            'summary' => 'required',
-            'image.id' => 'required|exists:files,id',
+            'title' => 'string|required|max:255',
             'author.id' => 'required|exists:authors,id',
             'category.id' => 'required|exists:categories,id',
             'municipality.id' => 'required|exists:municipalities,id',

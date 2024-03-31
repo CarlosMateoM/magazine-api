@@ -21,13 +21,12 @@ class UpdateArticleRequest extends FormRequest
      */
     public function rules(): array
     {
+        //'image.id' => 'required|integer|exists:files,id',
         return [
             'title' => 'required|string',
             'content' => 'required|string',
             'status' => 'required|string|in:DRAFT,PUBLISHED,UNPUBLISHED,draft,published,unpublished',
             'summary' => 'required|string',
-            'publishedAt' => 'nullable|date',
-            'image.id' => 'required|integer|exists:files,id',
             'author.id' => 'required|integer|exists:authors,id',
             'category.id'  => 'required|integer|exists:categories,id',
             'municipality.id' =>  'required|integer|exists:municipalities,id'
