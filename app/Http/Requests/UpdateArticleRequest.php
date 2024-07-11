@@ -24,7 +24,7 @@ class UpdateArticleRequest extends FormRequest
         //'image.id' => 'required|integer|exists:files,id',
         return [
             'title' => 'required|string',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'status' => 'required|string|in:DRAFT,PUBLISHED,UNPUBLISHED,draft,published,unpublished',
             'summary' => 'required|string',
             'author.id' => 'required|integer|exists:authors,id',
