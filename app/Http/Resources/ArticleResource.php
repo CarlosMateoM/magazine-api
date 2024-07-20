@@ -17,17 +17,17 @@ class ArticleResource extends JsonResource
         $data = [
             'id' => $this->id,
             'title' => $this->title,
-            'content' => '',
             'slug' => $this->slug,
             'status' =>$this->status,
             'summary' => $this->summary,
+            'views' => $this->views,
             'publishedAt' =>$this->published_at,
-            'author' => new AuthorResource($this->whenLoaded('author')),
-            'image' => new FileResource($this->whenLoaded('file')),
-            'gallery' => $this->whenLoaded('galleries', GalleryResource::collection($this->galleries)),
             'category' => new CategoryResource($this->whenLoaded('category')),
+            'author' => new AuthorResource($this->whenLoaded('author')),
             'municipality' => new MunicipalityResource($this->whenLoaded('municipality')),
-            'advertisements' => $this->whenLoaded('advertisements', ArticleAdvertisementResource::collection($this->advertisements)),
+            'image' => new FileResource($this->whenLoaded('file')), 
+            'gallery' => GalleryResource::collection($this->whenLoaded('galleries')),
+            'advertisements' => ArticleAdvertisementResource::collection($this->whenLoaded('advertisements')),
         ];
 
         if ($request->has('includeContent')) {
@@ -38,17 +38,3 @@ class ArticleResource extends JsonResource
         return $data;
     }
 }
-
-/*
-
-  'title',
-        'content',
-        'status',
-        'summary',
-        'published_at',
-        'author_id',
-        'category_id',
-        'image_id',
-        'municipality_id',
-*/
-

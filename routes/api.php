@@ -7,6 +7,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\ArticleSectionController;
+use App\Http\Controllers\ArticleViewController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\SectionController;
@@ -39,7 +40,9 @@ Route::prefix('v1')->group(function () {
         Route::get('user', function (Request $request) {
             return $request->user()->load('role');
         });
-
+        
+        Route::get('articles/most-viewed', [ArticleViewController::class, 'index']);
+        
         Route::resource('users', UserController::class);
         Route::resource('files', FileController::class);
         Route::resource('authors', AuthorController::class);
@@ -49,7 +52,10 @@ Route::prefix('v1')->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('municipalities', MunicipalityController::class);
-        Route::resource('articles/sections', ArticleSectionController::class);
+        Route::resource('articles.sections', ArticleSectionController::class);
+        
+        
+        Route::post('articles/{article}/view', [ArticleViewController::class, 'store']);
         
 
         Route::post('auth/logout', [AuthController::class, 'logout']);        

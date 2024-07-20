@@ -9,7 +9,6 @@ use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\Category;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Str;
@@ -49,6 +48,10 @@ class ArticleController extends Controller
 
         if ($request->user()->hasRole('reader')) {
             $query->where('status', 'published');
+        }
+
+        if ($request->has('limit')){
+            $query->limit($request->limit);
         }
 
 
