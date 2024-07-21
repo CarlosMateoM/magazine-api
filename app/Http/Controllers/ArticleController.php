@@ -49,7 +49,7 @@ class ArticleController extends Controller
             $query->where('status', 'published');
         }
 
-        if ($request->has('limit')){
+        if ($request->has('limit')) {
             $query->limit($request->limit);
         }
 
@@ -76,16 +76,16 @@ class ArticleController extends Controller
         $article = new Article();
 
 
-        if($request->category['id'] !== Category::where('name', 'opinion')->first()->id){
-        
+        if ($request->category['id'] !== Category::where('name', 'opinion')->first()->id) {
+
             $request->validate([
                 'image.id' => 'required|exists:files,id'
             ]);
 
             $article->file_id = $request->image['id'];
         }
-    
-        
+
+
         $article->title = $request->title;
         $article->status = $request->status;
         $article->summary = $request->summary;
@@ -95,8 +95,7 @@ class ArticleController extends Controller
         $article->author_id = $request->author['id'];
         $article->category_id = $request->category['id'];
         $article->municipality_id = $request->municipality['id'];
-
-        $article->updatePublishedAt();
+        $article->published_at = $request->publishedAt;
 
         $article->save();
 
@@ -137,28 +136,26 @@ class ArticleController extends Controller
         $this->authorize('update', $article, $request->user());
 
 
-        if($request->category['id'] !== Category::where('name', 'opinion')->first()->id){
-        
+        if ($request->category['id'] !== Category::where('name', 'opinion')->first()->id) {
+
             $request->validate([
                 'image.id' => 'required|exists:files,id'
             ]);
 
             $article->file_id = $request->image['id'];
         }
-    
+
 
         $article->title = $request->title;
         $article->content = $request->content;
         $article->status = $request->status;
         $article->summary = $request->summary;
         $article->slug = Str::slug($request->title);
-        
         $article->author_id = $request->author['id'];
         $article->category_id = $request->category['id'];
         $article->municipality_id = $request->municipality['id'];
+        $article->published_at = $request->publishedAt;
 
-        $article->updatePublishedAt();
-        
         $article->save();
 
         $article->load([

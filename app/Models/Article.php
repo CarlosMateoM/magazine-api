@@ -60,11 +60,5 @@ class Article extends Model
     public function isPublished(){
         return $this->status === 'published';
     }
-
-    public function updatePublishedAt(){
-        if($this->published_at == null && $this->status == 'PUBLISHED'){ 
-            $this->published_at = now();
-        } 
-    }
     
 }
