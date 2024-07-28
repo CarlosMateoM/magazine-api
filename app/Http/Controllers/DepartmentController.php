@@ -7,17 +7,30 @@ use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class DepartmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $departments = Department::all();
+        $query = QueryBuilder::for(Department::class)
+            ->allowedIncludes([
+                'municipalities'
+            ])
+            ->allowedFilters([
+                'name'
+            ]);
 
-        return response()->json($departments);
+        if($request->has('paginate')){
+            $result = $query->paginate($request->paginate);
+        } else {
+            $result = $query->get();
+        }
+        
+        return response()->json($result);
     }
 
     /** 
@@ -49,9 +62,12 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDepartmentRequest $request, Department $departament)
+    public function update(UpdateDepartmentRequest $request, Department $department)
     {
-        //
+        $department->name = $request->name;
+        $department->save();
+
+        return response()->json($department);
     }
 
     /**
