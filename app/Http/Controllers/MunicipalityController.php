@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMunicipalityRequest;
 use App\Http\Requests\UpdateMunicipalityRequest;
 use App\Models\Municipality;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class MunicipalityController extends Controller
@@ -14,14 +16,24 @@ class MunicipalityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = QueryBuilder::for(Municipality::class)
-                ->allowedFilters([
-                    'department_id'
-                ]);
+            ->allowedIncludes([
+                'department'
+            ])
+            ->allowedFilters([
+                'name',
+                'department_id'
+            ]);
 
-        return response()->json($query->get()); 
+        if ($request->has('paginate')) {
+            $result = $query->paginate($request->paginate);
+        } else {
+            $result = $query->get();
+        }
+
+        return response()->json($result);
     }
 
 
@@ -54,7 +66,12 @@ class MunicipalityController extends Controller
      */
     public function update(UpdateMunicipalityRequest $request, Municipality $municipality)
     {
-        //
+        $municipality->name = $request->name;
+        $municipality->department_id = $request->departmentId;
+
+        $municipality->save();
+
+        return response()->json($municipality);
     }
 
     /**

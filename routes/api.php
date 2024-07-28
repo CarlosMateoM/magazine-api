@@ -50,7 +50,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('articles', ArticleController::class);
         Route::resource('galleries', GalleryController::class);
         Route::resource('categories', CategoryController::class);
-        Route::resource('departments', DepartmentController::class);
+        Route::apiResource('departments', DepartmentController::class);
         Route::resource('municipalities', MunicipalityController::class);
         Route::resource('articles.sections', ArticleSectionController::class);
         
