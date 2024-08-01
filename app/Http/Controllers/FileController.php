@@ -3,21 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;
 use App\Http\Resources\FileResource;
 use App\Models\File;
-use App\Services\AzureBlobService;
+use App\Services\FileStorageService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
+
 
 class FileController extends Controller
 {
-    private $azureBlobService;
+    private $fileStorageService;
 
-    public function __construct(AzureBlobService $azureBlobService)
-    {
-        $this->azureBlobService = $azureBlobService;
+    public function __construct(
+        FileStorageService $fileStorageService
+    ) {
+        $this->fileStorageService = $fileStorageService;
     }
 
     /**
@@ -40,25 +43,29 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
-        $file = $request->file('file');
+        try {
 
-        $fileType = explode('/', $file->getMimeType());
+            $file = $request->file('file');
 
-        $blobName = uniqid() . '.' . $file->getClientOriginalExtension();
+            $response = $this->fileStorageService->store($file);
 
-        $response = $this->azureBlobService->uploadBlob($blobName, $file);
+            $fileStored = new File();
+            $fileStored->name = $request->name;
+            $fileStored->hash = $response['hash'];
+            $fileStored->url = $response['url'];
+            $fileStored->type = explode('/', $file->getMimeType())[0];
+            $fileStored->description = $request->description;
 
-        $fileStored = new File();
+            $fileStored->save();
 
-        $fileStored->name = $request->name;
-        $fileStored->hash = $response['hash'];
-        $fileStored->url = $response['url'];
-        $fileStored->type = $fileType[0];  
-        $fileStored->description = $request->description;
+            return response()->json($fileStored, 201);
+            
+        } catch (Exception $e) {
 
-        $fileStored->save();
-        
-        return response()->json($fileStored, 201);
+            Log::error('File upload failed: ' . $e->getMessage());
+
+            return response()->json(['error' => 'File upload failed'], 500);
+        }
     }
 
     /**
