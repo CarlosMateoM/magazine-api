@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
-use App\Models\Author;
 use App\Models\User;
-use GuzzleHttp\Psr7\Query;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 

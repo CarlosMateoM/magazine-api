@@ -8,62 +8,27 @@ use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\Category;
+use App\Services\ArticleService;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Str;
-use Spatie\QueryBuilder\AllowedFilter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ArticleController extends Controller
 {
 
+    public function __construct(
+        private ArticleService $articleService
+    ) {}
+
+
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-
-        $query = QueryBuilder::for(Article::class)
-            ->allowedFilters([
-                'title',
-                'published_at',
-                'category.name',
-                'user.id',
-                AllowedFilter::exact('sections.name'),
-                AllowedFilter::exact('status'),
-            ])
-            ->allowedIncludes([
-                'file',
-                'author.file',
-                'category',
-                'municipality',
-                'advertisements.file'
-            ])
-            ->allowedSorts([
-                'title',
-                'published_at',
-                'created_at'
-            ]);
-
-        if ($request->user()->hasRole('reader')) {
-            $query->where('status', 'published');
-        }
-
-        if ($request->has('limit')) {
-            $query->limit($request->limit);
-        }
-
-
-        if ($request->has('paginate')) {
-            $articles = $query->paginate($request->paginate);
-            return response()->json(
-                new ArticleCollection($articles)
-            );
-        } else {
-            return response()->json(
-                ArticleResource::collection($query->get())
-            );
-        }
+    public function index(Request $request) {
+        
+        $articles = $this->articleService->getArticles($request);
+        
+        return ArticleResource::collection($articles)->resource;
     }
 
     /**
@@ -146,6 +111,8 @@ class ArticleController extends Controller
         }
 
 
+        $article->title = $request->title ? $request->title : $article->title;
+        
         $article->title = $request->title;
         $article->content = $request->content;
         $article->status = $request->status;
