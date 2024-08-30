@@ -38,31 +38,7 @@ class ArticleController extends Controller
     {
         $this->authorize('create', Article::class, $request->user());
 
-        $article = new Article();
-
-
-        if ($request->category['id'] !== Category::where('name', 'opinion')->first()->id) {
-
-            $request->validate([
-                'image.id' => 'required|exists:files,id'
-            ]);
-
-            $article->file_id = $request->image['id'];
-        }
-
-
-        $article->title = $request->title;
-        $article->status = $request->status;
-        $article->summary = $request->summary;
-        $article->content = $request->content;
-        $article->user_id = $request->user()->id;
-        $article->slug = Str::slug($request->title);
-        $article->author_id = $request->author['id'];
-        $article->category_id = $request->category['id'];
-        $article->municipality_id = $request->municipality['id'];
-        $article->published_at = $request->publishedAt;
-
-        $article->save();
+        $article = $this->articleService->createArticle($request);
 
         return response()->json($article, 201);
     }
