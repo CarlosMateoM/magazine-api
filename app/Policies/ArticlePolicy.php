@@ -30,6 +30,14 @@ class ArticlePolicy
     }
 
     /**
+     * Determine whether the user can view the model.
+     */
+    public function show(User $user, Article $article): bool
+    {
+        return $user->hasRole('reader') && !$article->isPublished();
+    }
+
+    /**
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, Article $article): bool
