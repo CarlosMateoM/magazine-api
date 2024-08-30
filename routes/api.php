@@ -7,6 +7,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\ArticleSectionController;
+use App\Http\Controllers\ArticleSlugController;
 use App\Http\Controllers\ArticleViewController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GalleryController;
@@ -30,8 +31,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     
     
-    Route::post('auth/login', [AuthController::class, 'login']);
-    Route::post('auth/register', [AuthController::class, 'register']);
+    Route::post('auth/login',                   [AuthController::class, 'login']);
+    Route::post('auth/register',                [AuthController::class, 'register']);
     
 
 
@@ -40,25 +41,28 @@ Route::prefix('v1')->group(function () {
         Route::get('user', function (Request $request) {
             return $request->user()->load('role');
         });
-        
-        Route::get('articles/most-viewed', [ArticleViewController::class, 'index']);
-        
-        Route::resource('users', UserController::class);
-        Route::resource('files', FileController::class);
-        Route::resource('authors', AuthorController::class);
-        Route::resource('sections', SectionController::class);
-        Route::resource('articles', ArticleController::class);
-        Route::resource('galleries', GalleryController::class);
-        Route::resource('categories', CategoryController::class);
-        Route::apiResource('departments', DepartmentController::class);
-        Route::resource('municipalities', MunicipalityController::class);
-        Route::resource('articles.sections', ArticleSectionController::class);
-        
-        
-        Route::post('articles/{article}/view', [ArticleViewController::class, 'store']);
-        
 
-        Route::post('auth/logout', [AuthController::class, 'logout']);        
+        Route::get('articles/most-viewed',          [ArticleViewController::class, 'show']);
+        
+        Route::apiResource('users',                 UserController::class);
+        Route::apiResource('files',                 FileController::class);
+        Route::apiResource('authors',               AuthorController::class);
+        Route::apiResource('sections',              SectionController::class);
+        
+        Route::apiResource('articles',              ArticleController::class);
+
+        Route::get('articles/slugs/{slug}',         [ArticleSlugController::class, 'show']);
+        
+        Route::apiResource('galleries',             GalleryController::class);
+        Route::apiResource('categories',            CategoryController::class);
+        Route::apiResource('departments',           DepartmentController::class);
+        Route::apiResource('municipalities',        MunicipalityController::class);
+        Route::apiResource('articles.sections',     ArticleSectionController::class);
+        
+        
+        Route::post('articles/{article}/view',      [ArticleViewController::class, 'store']);
+        
+        Route::post('auth/logout',              [AuthController::class, 'logout']);        
 
     }); 
 });

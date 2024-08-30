@@ -24,6 +24,11 @@ class ArticlePolicy
         return $user->hasRole('writer') && $user->id === $article->user_id;
     }
 
+    public function show(User $user): bool
+    {
+        return $user->hasAnyRole(['admin']);
+    }
+
     /**
      * Determine whether the user can delete the model.
      */

@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
-use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\Category;
 use App\Services\ArticleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ArticleController extends Controller
 {
@@ -24,10 +22,10 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) {
-        
+    public function index(Request $request)
+    {
         $articles = $this->articleService->getArticles($request);
-        
+
         return ArticleResource::collection($articles)->resource;
     }
 
@@ -40,7 +38,6 @@ class ArticleController extends Controller
 
         $article = new Article();
 
-
         if ($request->category['id'] !== Category::where('name', 'opinion')->first()->id) {
 
             $request->validate([
@@ -49,7 +46,6 @@ class ArticleController extends Controller
 
             $article->file_id = $request->image['id'];
         }
-
 
         $article->title = $request->title;
         $article->status = $request->status;
@@ -70,9 +66,11 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($article, Request $request)
-    {
-        $article = Article::Where('id', $article)
+    public function show(Article $article, Request $request)
+    {       
+        $this->authorize('show', Article::class, $request->user());
+
+        /* Article::Where('id', $article)
             ->orWhere('slug', $article)
             ->firstOrFail();
 
@@ -88,7 +86,7 @@ class ArticleController extends Controller
 
         if ($request->user()->hasRole('reader') && !$article->isPublished()) {
             throw new NotFoundHttpException('No query results for model.');
-        }
+        } */
 
         return response()->json(new ArticleResource($article));
     }
@@ -100,37 +98,7 @@ class ArticleController extends Controller
     {
         $this->authorize('update', $article, $request->user());
 
-
-        if ($request->category['id'] !== Category::where('name', 'opinion')->first()->id) {
-
-            $request->validate([
-                'image.id' => 'required|exists:files,id'
-            ]);
-
-            $article->file_id = $request->image['id'];
-        }
-
-
-        $article->title = $request->title ? $request->title : $article->title;
-        
-        $article->title = $request->title;
-        $article->content = $request->content;
-        $article->status = $request->status;
-        $article->summary = $request->summary;
-        $article->slug = Str::slug($request->title);
-        $article->author_id = $request->author['id'];
-        $article->category_id = $request->category['id'];
-        $article->municipality_id = $request->municipality['id'];
-        $article->published_at = $request->publishedAt;
-
-        $article->save();
-
-        $article->load([
-            'file',
-            'author',
-            'category',
-            'municipality.department'
-        ]);
+        $article = $this->articleService->updateArticle($request, $article);
 
         return response()->json(new ArticleResource($article), 200);
     }
@@ -142,6 +110,8 @@ class ArticleController extends Controller
     {
         $this->authorize('delete', $article, request()->user());
 
-        $article->delete();
+        $this->articleService->deleteArticle($article);
+
+        return response()->json(['deleted_id' => $article->id], 204);
     }
 }
