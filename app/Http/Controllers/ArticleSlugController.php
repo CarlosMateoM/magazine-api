@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ArticleResource;
+use App\Models\Article;
 use App\Services\ArticleService;
 
 class ArticleSlugController extends Controller
@@ -20,7 +21,7 @@ class ArticleSlugController extends Controller
     {
         $article = $this->articleService->findArticleBySlug($slug);
 
-        $this->authorize('show', );
+        $this->authorize('showArticleSlug', $article);
         
         return response()->json(new ArticleResource($article), 200);
     }

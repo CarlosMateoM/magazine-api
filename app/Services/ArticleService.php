@@ -2,47 +2,40 @@
 
 namespace App\Services;
 
-<<<<<<< HEAD
+use App\Enums\ArticleStatus;
+use App\Enums\RoleType;
 use App\Http\Requests\UpdateArticleRequest;
-use Illuminate\Support\Str;
-use App\Models\Article;
-use App\Models\Category;
-=======
 use App\Http\Requests\StoreArticleRequest;
-use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Support\Str;
-use App\Models\File;
->>>>>>> 2065efda2d14280801a39eda86bbda702f99ffeb
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ArticleService
 {
+    private const DEFAULT_PER_PAGE = 10;
 
     public function findArticleBySlug(string $slug): Article
     {
         $article = Article::where('slug', $slug)
+            ->with([
+                'file',
+                'category',
+                'sections',
+                'author.file',
+                'galleries.file',
+                'municipality.department',
+                'advertisements.advertisement.files.file'
+            ])
             ->firstOrFail();
-
-        $article->load([
-            'file',
-            'category',
-            'sections',
-            'author.file',
-            'galleries.file',
-            'municipality.department',
-            'advertisements.advertisement.files.file'
-        ]);
 
         return $article;
     }
 
     public function getArticles(Request $request)
     {
-
         $articles = QueryBuilder::for(Article::class)
             ->allowedFilters([
                 'user.id',
@@ -64,37 +57,21 @@ class ArticleService
                 'published_at',
                 'created_at'
             ])
-            ->paginate(10)
-            ->appends($request->query());
+            ->defaultSort('-created_at');
 
-        if ($request->user()->hasRole('reader')) {
-            $articles->where('status', 'published');
+        if ($request->user()->hasRole(RoleType::READER->value)) {
+            $articles->where('status', ArticleStatus::PUBLISHED->value);
         }
 
-        return $articles;
+        return $articles->paginate(self::DEFAULT_PER_PAGE)
+            ->appends($request->query());
     }
 
-    public function getArticle($id) {}
-
-    /**
-     * if the article is not an opinion article, the request must contain an image
-     * to be used as the article's main image and the image must exist in the database
-     */
     public function createArticle(StoreArticleRequest $request)
     {
         $article = new Article();
 
-        if ($request->category['id'] !== Category::where('name', 'opinion')->first()->id) {
-
-            $request->validate([
-                'image.id' => 'required|exists:files,id'
-            ]);
-
-            //File::findOrFail($request->image['id']); possible implementation
-
-            $article->file_id = $request->image['id'];
-        }
-
+        $this->handleArticleImage($article, $request);
 
         $article->title = $request->title;
         $article->status = $request->status;
@@ -108,20 +85,14 @@ class ArticleService
         $article->published_at = $request->publishedAt;
 
         $article->save();
+
+        return $article;
     }
 
     public function updateArticle(UpdateArticleRequest $request, Article $article): Article
     {
 
-
-        if ($request->category['id'] !== Category::where('name', 'opinion')->first()->id) {
-
-            $request->validate([
-                'image.id' => 'required|exists:files,id'
-            ]);
-
-            $article->file_id = $request->image['id'];
-        }
+        $this->handleArticleImage($article, $request);
 
         $article->title = $request->title;
         $article->status = $request->status;
@@ -136,18 +107,31 @@ class ArticleService
 
         $article->save();
 
-        $article->load([
-            'file',
-            'author',
-            'category',
-            'municipality.department'
-        ]);
-
         return $article;
     }
 
     public function deleteArticle(Article $article)
     {
         $article->delete();
+    }
+
+
+    /**
+     * If the article is an opinion article, the author's image will be used
+     * as the cover and for SEO purposes. In other cases, the image must be 
+     * present in the database and included in the request.
+     */
+    private function handleArticleImage(Article $article, Request $request): void
+    {
+        $opinionCategoryId = Category::where('name', 'opinion')->first()->value('id');
+
+        if ($request->category['id'] !== $opinionCategoryId) {
+
+            $request->validate([
+                'image.id' => 'required|exists:files,id'
+            ]);
+
+            $article->file_id = $request->image['id'];
+        }
     }
 }

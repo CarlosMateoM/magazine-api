@@ -2,18 +2,27 @@
 
 namespace App\Policies;
 
+use App\Enums\RoleType;
 use App\Models\Article;
 use App\Models\User;
 
 class ArticlePolicy
 {
-  
+
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
+
     /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['writer', 'admin']);
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value
+        ]);
     }
 
     /**
@@ -21,20 +30,20 @@ class ArticlePolicy
      */
     public function update(User $user, Article $article): bool
     {
-        return $user->hasRole('writer') && $user->id === $article->user_id;
+        return $user->hasRole(RoleType::ADMIN->value)
+            || $user->hasRole(RoleType::WRITER->value)
+            && $user->id === $article->user_id;
     }
 
-    public function show(User $user): bool
-    {
-        return $user->hasAnyRole(['admin']);
-    }
 
     /**
      * Determine whether the user can view the model.
      */
     public function show(User $user, Article $article): bool
     {
-        return $user->hasRole('reader') && !$article->isPublished();
+        return $user->hasRole(RoleType::ADMIN->value)
+            || $user->hasRole(RoleType::WRITER->value)
+            && $user->id === $article->user_id;
     }
 
     /**
@@ -42,6 +51,8 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article): bool
     {
-        return $user->hasRole('writer') && $user->id === $article->user_id;
+        return $user->hasRole(RoleType::ADMIN->value)
+            || $user->hasRole(RoleType::WRITER->value)
+            && $user->id === $article->user_id;
     }
 }

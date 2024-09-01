@@ -23,6 +23,7 @@ class StoreArticleRequest extends FormRequest
     {
         /*
         remove to improve flexibility of the request and validate in business logic
+
         todo: add nullable to the fields that are not required in database
         'content' => '',
         'summary' => '',
@@ -30,7 +31,7 @@ class StoreArticleRequest extends FormRequest
         */
 
         return [
-            'title' => 'string|required|max:255',
+            'title' => 'string|required|max:255|unique:articles,title',
             'author.id' => 'required|exists:authors,id',
             'category.id' => 'required|exists:categories,id',
             'municipality.id' => 'required|exists:municipalities,id',
