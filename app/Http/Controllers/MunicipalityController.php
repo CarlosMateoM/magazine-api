@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreMunicipalityRequest;
 use App\Http\Requests\UpdateMunicipalityRequest;
 use App\Models\Municipality;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class MunicipalityController extends Controller
