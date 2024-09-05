@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enums\RoleType;
 use App\Models\Author;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class AuthorPolicy
 {
@@ -13,7 +13,7 @@ class AuthorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('writer');
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class AuthorPolicy
      */
     public function view(User $user, Author $author): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,10 @@ class AuthorPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value
+        ]);
     }
 
     /**
@@ -37,7 +40,10 @@ class AuthorPolicy
      */
     public function update(User $user, Author $author): bool
     {
-        return false;
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value
+        ]);
     }
 
     /**
@@ -45,7 +51,10 @@ class AuthorPolicy
      */
     public function delete(User $user, Author $author): bool
     {
-        return false;
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value
+        ]);
     }
 
     /**

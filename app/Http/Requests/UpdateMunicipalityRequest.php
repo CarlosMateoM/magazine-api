@@ -22,8 +22,8 @@ class UpdateMunicipalityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'departmentId' => ['required', 'integer', 'exists:departments,id']
+            'name' => 'required|string|max:255',
+            'departmentId' => 'required|integer|exists:departments,id',
         ];
     }
 }

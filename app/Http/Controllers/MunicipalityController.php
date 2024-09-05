@@ -3,50 +3,43 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreMunicipalityRequest;
 use App\Http\Requests\UpdateMunicipalityRequest;
+use App\Http\Resources\MunicipalityResource;
 use App\Models\Municipality;
+use App\Services\MunicipalityService;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class MunicipalityController extends Controller
 {
+
+
+    public function __construct(
+        private MunicipalityService $municipalityService
+    ) {
+        $this->authorizeResource(Municipality::class);
+    }
+
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $query = QueryBuilder::for(Municipality::class)
-            ->allowedIncludes([
-                'department'
-            ])
-            ->allowedFilters([
-                'name',
-                'department_id'
-            ]);
+        $municipalities = $this->municipalityService->getMunicipalities($request);
 
-        if ($request->has('paginate')) {
-            $result = $query->paginate($request->paginate);
-        } else {
-            $result = $query->get();
-        }
-
-        return response()->json($result);
+        return response()->json(MunicipalityResource::collection($municipalities)->resource);
     }
 
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMunicipalityRequest $request)
     {
-        $municipality = new Municipality();
+        $municipality = $this->municipalityService->createMunicipality($request);
 
-        $municipality->name = $request->name;
-        $municipality->department_id = $request->departmentId;
-
-        $municipality->save();
-
-        return response()->json($municipality, 201);
+        return response()->json(new MunicipalityResource($municipality), 201);
     }
 
     /**
@@ -54,7 +47,7 @@ class MunicipalityController extends Controller
      */
     public function show(Municipality $municipality)
     {
-        //
+        return response()->json(new MunicipalityResource($municipality));
     }
 
 
@@ -63,12 +56,9 @@ class MunicipalityController extends Controller
      */
     public function update(UpdateMunicipalityRequest $request, Municipality $municipality)
     {
-        $municipality->name = $request->name;
-        $municipality->department_id = $request->departmentId;
+        $municipality = $this->municipalityService->updateMunicipality($request, $municipality);
 
-        $municipality->save();
-
-        return response()->json($municipality);
+        return response()->json(new MunicipalityResource($municipality));
     }
 
     /**
@@ -76,6 +66,8 @@ class MunicipalityController extends Controller
      */
     public function destroy(Municipality $municipality)
     {
-        //
+        $this->municipalityService->deleteMunicipality($municipality);
+
+        return response()->json(['deleted_id' => $municipality->id], 204);
     }
 }

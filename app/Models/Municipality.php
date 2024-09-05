@@ -11,8 +11,8 @@ class Municipality extends Model
 
     protected $fillable = ['name', 'department_id'];
 
-    public function department(){
+    public function department()
+    {
         return $this->belongsTo(Department::class);
     }
-    
 }

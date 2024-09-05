@@ -5,12 +5,15 @@ namespace App\Services;
 use App\Http\Requests\StoreAuthorRequest;
 use App\Http\Requests\UpdateAuthorRequest;
 use App\Models\Author;
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class AuthorService
 {
 
-    public function getAuthors()
+    private const DEFAULT_PER_PAGE = 10;
+
+    public function getAuthors(Request $request)
     {
         $authors = QueryBuilder::for(Author::class)
             ->filterByName()
@@ -19,7 +22,8 @@ class AuthorService
                 'articles'
             ]);
 
-        return $authors;
+        return $authors->paginate(self::DEFAULT_PER_PAGE)
+            ->appends($request->query());
     }
 
     public function createAuthor(StoreAuthorRequest $request): Author
@@ -42,8 +46,9 @@ class AuthorService
         $author->first_name = $request->firstName;
         $author->last_name = $request->lastName;
         $author->biography = $request->biography;
-        $author->file_id
+        $author->file_id = $request->file['id'];
 
+        $author->save();
 
         return $author;
     }

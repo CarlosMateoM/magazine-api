@@ -2,69 +2,47 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class CategoryController extends Controller
 {
+
+    public function __construct(
+        private CategoryService $categoryService
+    ) {
+        $this->authorizeResource(Category::class, 'category');
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = QueryBuilder::for(Category::class)
-            ->allowedFilters('name')
-            ->allowedIncludes('articles');
+        $categories = $this->categoryService->getCategories($request);
 
-        return response()->json(CategoryResource::collection($query->get()));
+        return response()->json(CategoryResource::collection($categories)->resource);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $category = new Category();
+        $category = $this->categoryService->createCategory($request);
 
-        $category->name = $request->name;
-        $category->description = $request->description;
-
-        $category->save();
-
-        return response()->json($category, 201);
+        return response()->json(new CategoryResource($category), 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($category, Request $request)
+    public function show(Category $category)
     {
-        $category = Category::Where('id', $category)
-            ->orWhere('name', $category)
-            ->firstOrFail();
-
-        $category->load([
-            'articles' => function ($query) use ($request) {
-
-                $query->orderBy('created_at', 'desc');
-
-                if ($request->user()->hasRole('reader')) {
-                    $query->where('status', 'published');
-                }
-
-                if ($request->has('limit') && is_numeric($request->limit) && $request->limit > 0) {
-                    $query->limit($request->limit);
-                }
-
-                $query->with(['file', 'category', 'municipality.department']);
-            },
-        ]);
-
         return response()->json(new CategoryResource($category));
     }
 
@@ -74,12 +52,9 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category->name = $request->name;
-        $category->description = $request->description;
+        $category = $this->categoryService->updateCategory($request, $category);
 
-        $category->save();
-
-        return response()->json($category, 200);
+        return response()->json(new CategoryResource($category));
     }
 
     /**
@@ -87,11 +62,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
+        $this->categoryService->deleteCategory($category);
 
-        return response()->json([
-            'id' => $category->id,
-            'message' => 'Category deleted successfully'
-        ], 204);
+        return response()->json(['deleted_id' => $category->id], 204);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enums\RoleType;
 use App\Models\Department;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -13,7 +15,7 @@ class DepartmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +23,7 @@ class DepartmentPolicy
      */
     public function view(User $user, Department $Department): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +31,10 @@ class DepartmentPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value
+        ]);
     }
 
     /**
@@ -37,7 +42,10 @@ class DepartmentPolicy
      */
     public function update(User $user, Department $Department): bool
     {
-        return false;
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value
+        ]);
     }
 
     /**
@@ -45,7 +53,10 @@ class DepartmentPolicy
      */
     public function delete(User $user, Department $Department): bool
     {
-        return false;
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value
+        ]);
     }
 
     /**
