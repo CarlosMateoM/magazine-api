@@ -16,7 +16,8 @@ class MunicipalityController extends Controller
 
     public function __construct(
         private MunicipalityService $municipalityService
-    ) {
+    ) 
+    {
         $this->authorizeResource(Municipality::class);
     }
 
@@ -47,6 +48,8 @@ class MunicipalityController extends Controller
      */
     public function show(Municipality $municipality)
     {
+        $municipality = $this->municipalityService->getMunicipality($municipality);
+
         return response()->json(new MunicipalityResource($municipality));
     }
 

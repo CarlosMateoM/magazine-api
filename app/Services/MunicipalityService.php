@@ -28,6 +28,11 @@ class MunicipalityService
             ->appends($request->query());
     }
 
+    public function getMunicipality(Municipality $municipality): Municipality
+    {
+        return $municipality->load('department');
+    }
+
     public function createMunicipality(StoreMunicipalityRequest $request): Municipality
     {
         $municipality = new Municipality();

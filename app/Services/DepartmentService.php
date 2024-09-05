@@ -43,7 +43,7 @@ class DepartmentService
         return $department;
     }
 
-    public function update(UpdateDepartmentRequest $request, Department $department): Department
+    public function updateDepartment(UpdateDepartmentRequest $request, Department $department): Department
     {
         $department->name = $request->name;
 
@@ -52,7 +52,7 @@ class DepartmentService
         return $department;
     }
    
-    public function delete(Department $department): void
+    public function deleteDepartment(Department $department): void
     {
         $department->delete();
     }

@@ -6,12 +6,15 @@ use App\Http\Requests\StoreAuthorRequest;
 use App\Http\Requests\UpdateAuthorRequest;
 use App\Http\Resources\AuthorResource;
 use App\Models\Author;
-use Spatie\QueryBuilder\QueryBuilder;
+use App\Services\AuthorService;
+use Illuminate\Http\Request;
 
 class AuthorController extends Controller
 {
 
-    public function __construct()
+    public function __construct(
+        private AuthorService $authorService
+    )
     {
         $this->authorizeResource(Author::class, 'author');
     }
@@ -19,14 +22,11 @@ class AuthorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = QueryBuilder::for(Author::class)
-            ->filterByName()
-            ->allowedIncludes(['file', 'articles']);
+        $articles = $this->authorService->getAuthors($request);
 
-        
-        return response()->json(AuthorResource::collection($query->get()));
+        return response()->json(AuthorResource::collection($articles)->resource);
     }
 
     /**
@@ -34,14 +34,7 @@ class AuthorController extends Controller
      */
     public function store(StoreAuthorRequest $request)
     {    
-        $author = new Author();
-
-        $author->first_name = $request->firstName;
-        $author->last_name = $request->lastName;
-        $author->biography = '';
-        $author->file_id = $request->image['id'];
-
-        $author->save();
+        $author = $this->authorService->createAuthor($request);
 
         return response()->json(new AuthorResource($author), 201);
     }
@@ -51,7 +44,9 @@ class AuthorController extends Controller
      */
     public function show(Author $author)
     {
-        //
+        $author = $this->authorService->getAuthor($author);
+
+        return response()->json(new AuthorResource($author));
     }
 
     /**
@@ -59,12 +54,7 @@ class AuthorController extends Controller
      */
     public function update(UpdateAuthorRequest $request, Author $author)
     {
-        $author->first_name = $request->firstName;
-        $author->last_name = $request->lastName;
-        $author->biography = '';
-        $author->file_id = $request->image['id'];
-
-        $author->save();
+        $author = $this->authorService->updateAuthor($request, $author);
 
         return response()->json(new AuthorResource($author));
     }
@@ -74,6 +64,8 @@ class AuthorController extends Controller
      */
     public function destroy(Author $author)
     {
-        //
+        $this->authorService->deleteAuthor($author);
+
+        return response()->json(['deleted_id' => $author->id], 204);
     }
 }

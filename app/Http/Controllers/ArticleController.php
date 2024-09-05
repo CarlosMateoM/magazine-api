@@ -18,7 +18,6 @@ class ArticleController extends Controller
         $this->authorizeResource(Article::class, 'article');
     }
 
-
     /**
      * Display a listing of the resource.
      */
@@ -44,6 +43,8 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
+        $article = $this->articleService->getArticle($article);
+
         return response()->json(new ArticleResource($article));
     }
 

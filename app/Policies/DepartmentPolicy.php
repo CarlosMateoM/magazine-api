@@ -4,9 +4,8 @@ namespace App\Policies;
 
 use App\Enums\RoleType;
 use App\Models\Department;
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+
 
 class DepartmentPolicy
 {

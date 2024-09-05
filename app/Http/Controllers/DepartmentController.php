@@ -5,46 +5,39 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
+use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
+use App\Services\DepartmentService;
 use Illuminate\Http\Request;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class DepartmentController extends Controller
 {
+
+    public function __construct(
+        private DepartmentService $departmentService
+    )
+    {
+        $this->authorizeResource(Department::class);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $query = QueryBuilder::for(Department::class)
-            ->allowedIncludes([
-                'municipalities'
-            ])
-            ->allowedFilters([
-                'name'
-            ]);
-
-        if($request->has('paginate')){
-            $result = $query->paginate($request->paginate);
-        } else {
-            $result = $query->get();
-        }
+        $departments = $this->departmentService->getDepartments($request);
         
-        return response()->json($result);
+        return response()->json(DepartmentResource::collection($departments)->resource);
     }
 
     /** 
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreDepartmentRequest $request)
     {
-        $department = new Department();
+        $department = $this->departmentService->createDepartment($request);
 
-        $department->name = $request->name;
-
-        $department->save();
-
-        return response()->json($department, 201);  
+        return response()->json(new DepartmentResource($department), 201);  
     }
 
     /**
@@ -52,11 +45,9 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        $department->load([
-            'municipalities'
-        ]);
+        $department = $this->departmentService->getDepartment($department);
 
-        return response()->json($department);
+        return response()->json(new DepartmentResource($department));
     }
 
     /**
@@ -64,10 +55,9 @@ class DepartmentController extends Controller
      */
     public function update(UpdateDepartmentRequest $request, Department $department)
     {
-        $department->name = $request->name;
-        $department->save();
+        $department = $this->departmentService->updateDepartment($request, $department);
 
-        return response()->json($department);
+        return response()->json(new DepartmentResource($department));
     }
 
     /**
@@ -75,8 +65,8 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        $department->delete();
+        $this->departmentService->deleteDepartment($department);
 
-        return response()->json(null, 204);
+        return response()->json(['deleted_id' => $department->id], 204);
     }
 }

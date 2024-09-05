@@ -67,7 +67,20 @@ class ArticleService
             ->appends($request->query());
     }
 
-    public function createArticle(StoreArticleRequest $request)
+    public function getArticle(Article $article): Article
+    {
+        return $article->load([
+            'file',
+            'category',
+            'sections',
+            'author.file',
+            'galleries.file',
+            'municipality.department',
+            'advertisements.advertisement.files.file'
+        ]);
+    }
+
+    public function createArticle(StoreArticleRequest $request): Article
     {
         $article = new Article();
 

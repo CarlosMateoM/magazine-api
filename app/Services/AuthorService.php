@@ -26,6 +26,11 @@ class AuthorService
             ->appends($request->query());
     }
 
+    public function getAuthor(Author $author): Author
+    {
+        return $author->load('file');
+    }
+
     public function createAuthor(StoreAuthorRequest $request): Author
     {
         $author = new Author();
@@ -51,5 +56,10 @@ class AuthorService
         $author->save();
 
         return $author;
+    }
+
+    public function deleteAuthor(Author $author): void
+    {
+        $author->delete();
     }
 }
