@@ -27,7 +27,7 @@ class DepartmentController extends Controller
     {
         $departments = $this->departmentService->getDepartments($request);
         
-        return response()->json(DepartmentResource::collection($departments)->resource);
+        return DepartmentResource::collection($departments)->resource;
     }
 
     /** 
@@ -37,7 +37,7 @@ class DepartmentController extends Controller
     {
         $department = $this->departmentService->createDepartment($request);
 
-        return response()->json(new DepartmentResource($department), 201);  
+        return new DepartmentResource($department);  
     }
 
     /**
@@ -47,7 +47,7 @@ class DepartmentController extends Controller
     {
         $department = $this->departmentService->getDepartment($department);
 
-        return response()->json(new DepartmentResource($department));
+        return new DepartmentResource($department);
     }
 
     /**
@@ -57,7 +57,7 @@ class DepartmentController extends Controller
     {
         $department = $this->departmentService->updateDepartment($request, $department);
 
-        return response()->json(new DepartmentResource($department));
+        return new DepartmentResource($department);
     }
 
     /**

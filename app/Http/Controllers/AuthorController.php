@@ -26,7 +26,7 @@ class AuthorController extends Controller
     {
         $articles = $this->authorService->getAuthors($request);
 
-        return response()->json(AuthorResource::collection($articles)->resource);
+        return AuthorResource::collection($articles)->resource;
     }
 
     /**
@@ -36,7 +36,7 @@ class AuthorController extends Controller
     {    
         $author = $this->authorService->createAuthor($request);
 
-        return response()->json(new AuthorResource($author), 201);
+        return new AuthorResource($author);
     }
 
     /**
@@ -46,7 +46,7 @@ class AuthorController extends Controller
     {
         $author = $this->authorService->getAuthor($author);
 
-        return response()->json(new AuthorResource($author));
+        return new AuthorResource($author);
     }
 
     /**
@@ -56,7 +56,7 @@ class AuthorController extends Controller
     {
         $author = $this->authorService->updateAuthor($request, $author);
 
-        return response()->json(new AuthorResource($author));
+        return new AuthorResource($author);
     }
 
     /**

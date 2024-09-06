@@ -14,7 +14,8 @@ class CategoryController extends Controller
 
     public function __construct(
         private CategoryService $categoryService
-    ) {
+    ) 
+    {
         $this->authorizeResource(Category::class, 'category');
     }
 
@@ -25,7 +26,7 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryService->getCategories($request);
 
-        return response()->json(CategoryResource::collection($categories)->resource);
+        return CategoryResource::collection($categories)->resource;
     }
 
     /**
@@ -35,7 +36,7 @@ class CategoryController extends Controller
     {
         $category = $this->categoryService->createCategory($request);
 
-        return response()->json(new CategoryResource($category), 201);
+        return new CategoryResource($category);
     }
 
     /**
@@ -43,9 +44,8 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return response()->json(new CategoryResource($category));
+        return new CategoryResource($category);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -54,7 +54,7 @@ class CategoryController extends Controller
     {
         $category = $this->categoryService->updateCategory($request, $category);
 
-        return response()->json(new CategoryResource($category));
+        return new CategoryResource($category);
     }
 
     /**

@@ -24,7 +24,7 @@ class ArticleViewController extends Controller
                 ->get();
         });
 
-        return response()->json(ArticleResource::collection($mostViewedArticles));
+        return ArticleResource::collection($mostViewedArticles);
     }
 
     /**

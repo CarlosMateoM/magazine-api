@@ -8,11 +8,7 @@ use App\Http\Requests\UpdateFileRequest;
 use App\Http\Resources\FileResource;
 use App\Models\File;
 use App\Services\FileService;
-use App\Services\FileStorageService;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Spatie\QueryBuilder\QueryBuilder;
 
 
 class FileController extends Controller
@@ -29,7 +25,7 @@ class FileController extends Controller
     {
         $files = $this->fileService->getFiles($request);
 
-        return response()->json(FileResource::collection($files)->resource);
+        return FileResource::collection($files)->resource;
     }
 
     /**
@@ -37,25 +33,19 @@ class FileController extends Controller
      */
     public function store(StoreFileRequest $request)
     {
-        try {
+        $file = $this->fileService->createFile($request);
 
-            
-            return response()->json($fileStored, 201);
-            
-        } catch (Exception $e) {
-
-            Log::error('File upload failed: ' . $e->getMessage());
-
-            return response()->json(['error' => 'File upload failed'], 500);
-        }
+        return new FileResource($file);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(File $File)
+    public function show(File $file)
     {
-        return response()->json(new FileResource($File));
+        $file = $this->fileService->getFile($file);
+
+        return new FileResource($file);
     }
 
     /**
@@ -63,14 +53,18 @@ class FileController extends Controller
      */
     public function update(UpdateFileRequest $request, File $File)
     {
-        //
+        $file = $this->fileService->updateFile($request, $File);
+
+        return new FileResource($file);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(File $File)
+    public function destroy(File $file)
     {
-        //
+        $this->fileService->deleteFile($file);
+
+        return response()->json(['deleted_id' => $file->id ], 204);
     }
 }

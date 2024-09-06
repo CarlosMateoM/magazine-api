@@ -35,7 +35,7 @@ class ArticleController extends Controller
     {
         $article = $this->articleService->createArticle($request);
 
-        return response()->json(new ArticleResource($article), 201);
+        return new ArticleResource($article);
     }
 
     /**
@@ -45,7 +45,7 @@ class ArticleController extends Controller
     {
         $article = $this->articleService->getArticle($article);
 
-        return response()->json(new ArticleResource($article));
+        return new ArticleResource($article);
     }
 
     /**
@@ -55,7 +55,7 @@ class ArticleController extends Controller
     {
         $article = $this->articleService->updateArticle($request, $article);
 
-        return response()->json(new ArticleResource($article), 200);
+        return new ArticleResource($article);
     }
 
     /**

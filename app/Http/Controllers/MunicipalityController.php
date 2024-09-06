@@ -29,7 +29,7 @@ class MunicipalityController extends Controller
     {
         $municipalities = $this->municipalityService->getMunicipalities($request);
 
-        return response()->json(MunicipalityResource::collection($municipalities)->resource);
+        return MunicipalityResource::collection($municipalities)->resource;
     }
 
 
@@ -40,7 +40,7 @@ class MunicipalityController extends Controller
     {
         $municipality = $this->municipalityService->createMunicipality($request);
 
-        return response()->json(new MunicipalityResource($municipality), 201);
+        return new MunicipalityResource($municipality);
     }
 
     /**
@@ -50,7 +50,7 @@ class MunicipalityController extends Controller
     {
         $municipality = $this->municipalityService->getMunicipality($municipality);
 
-        return response()->json(new MunicipalityResource($municipality));
+        return new MunicipalityResource($municipality);
     }
 
 
@@ -61,7 +61,7 @@ class MunicipalityController extends Controller
     {
         $municipality = $this->municipalityService->updateMunicipality($request, $municipality);
 
-        return response()->json(new MunicipalityResource($municipality));
+        return new MunicipalityResource($municipality);
     }
 
     /**

@@ -22,6 +22,6 @@ class ArticleSlugController extends Controller
 
         $this->authorize('showArticleSlug', $article);
         
-        return response()->json(new ArticleResource($article), 200);
+        return new ArticleResource($article);
     }
 }
