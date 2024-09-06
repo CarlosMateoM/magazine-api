@@ -9,7 +9,6 @@ use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\ArticleSectionController;
 use App\Http\Controllers\ArticleSlugController;
 use App\Http\Controllers\ArticleViewController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\UserController;
@@ -28,13 +27,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('v1')->group(function () {
-    
-    
-    Route::post('auth/login',                   [AuthController::class, 'login']);
-    Route::post('auth/register',                [AuthController::class, 'register']);
-    
-
+Route::prefix('v1')->group(function () { 
 
     Route::middleware('auth:sanctum')->group(function () {
 
@@ -60,9 +53,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('articles.sections',     ArticleSectionController::class);
         
         
-        Route::post('articles/{article}/view',      [ArticleViewController::class, 'store']);
-        
-        Route::post('auth/logout',              [AuthController::class, 'logout']);        
+        Route::post('articles/{article}/view',      [ArticleViewController::class, 'store']);  
 
     }); 
 });

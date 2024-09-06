@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -20,28 +20,56 @@ class FileService
     public function getFiles(Request $request)
     {
         $files = QueryBuilder::for(File::class)
-            ->allowedFilters('name')
-            ->allowedIncludes('municipalities');
+            ->allowedFilters([
+                'name',
+                'type'
+            ]);
 
         return $files->paginate(self::DEFAULT_PER_PAGE)
-        ->appends($request->query());
+            ->appends($request->query());
     }
 
-    public function createFile(StoreFileRequest $file): File
+    public function getFile(File $file): File
     {
-        //return $this->fileStorageService->store($file);
+        return $file;
+    }
 
+    public function createFile(StoreFileRequest $request): File
+    {    
+        $fileData = $this->fileStorageService->saveFile($request->file('file'));
+        
         $file = new File();
 
-        $file->name = $file->getClientOriginalName();
+        $file->name = $request->name;
+        $file->hash = $fileData['hash'];
+        $file->url = $fileData['url'];
+        $file->type = explode('/', $file->getMimeType())[0];
+        $file->description = $request->description;
 
+        $file->save();
+
+        return $file;
     }
 
     public function updateFile(UpdateFileRequest $request, File $file): File
     {
-        //return $this->fileStorageService->store($file);
+        /*
+        todo: implement file update, but for now we will just update 
+        the file name and description because we are not updating the file 
+        itself
+        */
 
-        $file->name = $file->getClientOriginalName();
+        //$fileData = $this->fileStorageService->saveFile($request->file('file'));
+
+        $file->name = $request->name;
+        /*
+        $file->hash = $fileData['hash'];
+        $file->url = $fileData['url']; 
+        $file->type = explode('/', $file->getMimeType())[0];
+        */
+        $file->description = $request->description;
+
+        $file->save();
 
         return $file;
     }
@@ -50,5 +78,4 @@ class FileService
     {
         $file->delete();
     }
-
 }

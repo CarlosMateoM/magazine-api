@@ -22,7 +22,7 @@ class StoreFileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => ['required', 'file', 'mimes:pdf,docx,doc,png', 'max:2048'],
+            'file' => 'required|file|max:102400',
         ];
     }
 }

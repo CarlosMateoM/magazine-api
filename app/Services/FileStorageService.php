@@ -15,7 +15,7 @@ class FileStorageService
         $this->imageProcessingService = $imageProcessingService;
     }
 
-    public function store($file)
+    public function saveFile($file)
     {
         $blobName = uniqid();
 

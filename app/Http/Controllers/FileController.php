@@ -7,6 +7,7 @@ use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;
 use App\Http\Resources\FileResource;
 use App\Models\File;
+use App\Services\FileService;
 use App\Services\FileStorageService;
 use Exception;
 use Illuminate\Http\Request;
@@ -16,27 +17,19 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class FileController extends Controller
 {
-    private $fileStorageService;
 
     public function __construct(
-        FileStorageService $fileStorageService
-    ) {
-        $this->fileStorageService = $fileStorageService;
-    }
+        private FileService $fileService,
+    ) {}
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $files = QueryBuilder::for(File::class)
-            ->allowedFilters(['name', 'type'])
-            ->allowedSorts(['name', 'created_at'])
-            ->paginate(6);
+        $files = $this->fileService->getFiles($request);
 
-        return response()->json(
-            $files
-        );
+        return response()->json(FileResource::collection($files)->resource);
     }
 
     /**
@@ -46,19 +39,7 @@ class FileController extends Controller
     {
         try {
 
-            $file = $request->file('file');
-
-            $response = $this->fileStorageService->store($file);
-
-            $fileStored = new File();
-            $fileStored->name = $request->name;
-            $fileStored->hash = $response['hash'];
-            $fileStored->url = $response['url'];
-            $fileStored->type = explode('/', $file->getMimeType())[0];
-            $fileStored->description = $request->description;
-
-            $fileStored->save();
-
+            
             return response()->json($fileStored, 201);
             
         } catch (Exception $e) {
