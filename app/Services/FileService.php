@@ -57,16 +57,16 @@ class FileService
         todo: implement file update, but for now we will just update 
         the file name and description because we are not updating the file 
         itself
-        */
-
-        //$fileData = $this->fileStorageService->saveFile($request->file('file'));
-
-        $file->name = $request->name;
-        /*
+        
+        $fileData = $this->fileStorageService->saveFile($request->file('file'));
+        
         $file->hash = $fileData['hash'];
         $file->url = $fileData['url']; 
         $file->type = explode('/', $file->getMimeType())[0];
         */
+
+
+        $file->name = $request->name;
         $file->description = $request->description;
 
         $file->save();
@@ -78,4 +78,5 @@ class FileService
     {
         $file->delete();
     }
+    
 }

@@ -6,31 +6,27 @@ use App\Http\Requests\StoreGalleryRequest;
 use App\Http\Requests\UpdateGalleryRequest;
 use App\Http\Resources\GalleryResource;
 use App\Models\Gallery;
-use Spatie\QueryBuilder\QueryBuilder;
+use App\Services\GalleryService;
+use Illuminate\Http\Request;
 
 class GalleryController extends Controller
 {
+
+    public function __construct(
+        private GalleryService $galleryService
+    )
+    {
+        $this->authorizeResource(Gallery::class, 'gallery');
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = QueryBuilder::for(Gallery::class)
-            ->allowedFilters([
-                'caption',
-                'file.name',
-                'article.id',
-            ])
-            ->allowedIncludes([
-                'file',
-                'article',
-            ])
-            ->allowedSorts([
-                'caption',
-                'created_at',
-            ]);
+        $galleries = $this->galleryService->getGalleries($request);
 
-        return response()->json(GalleryResource::collection($query->get()));
+        return GalleryResource::collection($galleries)->resource;
     }
 
     /**
@@ -38,15 +34,9 @@ class GalleryController extends Controller
      */
     public function store(StoreGalleryRequest $request)
     {
-        $gallery = new Gallery();
-        
-        $gallery->file_id = $request->fileId;
-        $gallery->caption = $request->caption;  
-        $gallery->article_id = $request->articleId;
+        $gallery = $this->galleryService->createGallery($request);
 
-        $gallery->save();
-
-        return response()->json(new GalleryResource($gallery), 201);
+        return new GalleryResource($gallery);
     }
 
     /**
@@ -54,25 +44,19 @@ class GalleryController extends Controller
      */
     public function show(Gallery $gallery)
     {
-        $gallery->load([
-            'file',
-            'article',  
-        ]);
+        $gallery = $this->galleryService->getGallery($gallery);
 
-        return response()->json($gallery);
+        return new GalleryResource($gallery);
     }
-
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateGalleryRequest $request, Gallery $gallery)
     {
-        $gallery->file_id = $request->fileId;
-        $gallery->caption = $request->caption;
-        $gallery->article_id = $request->articleId;
+        $this->galleryService->updateGallery($request, $gallery);
 
-        $gallery->save();
+        return new GalleryResource($gallery);
     }
 
     /**
@@ -80,6 +64,8 @@ class GalleryController extends Controller
      */
     public function destroy(Gallery $gallery)
     {
-        $gallery->delete();
+        $this->galleryService->deleteGallery($gallery);
+
+        return response()->json(['deleted_id' => $gallery->id], 204);
     }
 }

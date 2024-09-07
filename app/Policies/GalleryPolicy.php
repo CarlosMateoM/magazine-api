@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\RoleType;
 use App\Models\Gallery;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,7 @@ class GalleryPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +22,7 @@ class GalleryPolicy
      */
     public function view(User $user, Gallery $gallery): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +30,10 @@ class GalleryPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value,
+        ]);
     }
 
     /**
@@ -37,7 +41,10 @@ class GalleryPolicy
      */
     public function update(User $user, Gallery $gallery): bool
     {
-        //
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value,
+        ]);
     }
 
     /**
@@ -45,7 +52,10 @@ class GalleryPolicy
      */
     public function delete(User $user, Gallery $gallery): bool
     {
-        //
+        return $user->hasAnyRole([
+            RoleType::ADMIN->value,
+            RoleType::WRITER->value,
+        ]);
     }
 
     /**
@@ -53,7 +63,7 @@ class GalleryPolicy
      */
     public function restore(User $user, Gallery $gallery): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -61,6 +71,6 @@ class GalleryPolicy
      */
     public function forceDelete(User $user, Gallery $gallery): bool
     {
-        //
+        return false;
     }
 }

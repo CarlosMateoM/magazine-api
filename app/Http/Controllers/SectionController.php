@@ -6,17 +6,27 @@ use App\Http\Requests\StoreSectionRequest;
 use App\Http\Requests\UpdateSectionRequest;
 use App\Http\Resources\SectionResource;
 use App\Models\Section;
+use App\Services\SectionService;
+use GuzzleHttp\Psr7\Request;
 
 class SectionController extends Controller
 {
+
+    public function __construct(
+        private SectionService $sectionService
+    )
+    {
+        $this->authorizeResource(Section::class, 'section');
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $section = Section::all();
+        $sections = $this->sectionService->getSections($request);
 
-        return response()->json($section);
+        return SectionResource::collection($sections)->resource;
     }
 
     /**
@@ -24,38 +34,29 @@ class SectionController extends Controller
      */
     public function store(StoreSectionRequest $request)
     {
-        $section = Section::create($request->all());
+        $section = $this->sectionService->createSection($request);
 
-        return response()->json($section, 201);
+        return new SectionResource($section);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($section)
+    public function show(Section $section)
     {
-        $section = Section::where('id', $section)
-            ->orWhere('name', $section)
-            ->firstOrFail();
+        $section = $this->sectionService->getSection($section);
 
-        $section->load([
-            'articles' => function ($query) {
-                $query->with(['file', 'category', 'municipality.department']);
-            },
-        ]);
-
-        return response()->json(new SectionResource($section));
+        return new SectionResource($section);
     }
-
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateSectionRequest $request, Section $section)
     {
-        $section->update($request->all());
+        $section = $this->sectionService->updateSection($request, $section);
 
-        return response()->json($section);
+        return new SectionResource($section);
     }
 
     /**
@@ -63,7 +64,7 @@ class SectionController extends Controller
      */
     public function destroy(Section $section)
     {
-        $section->delete();
+        $this->sectionService->deleteSection($section);
 
         return response()->json(null, 204);
     }

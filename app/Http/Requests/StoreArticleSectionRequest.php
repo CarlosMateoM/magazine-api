@@ -22,8 +22,7 @@ class StoreArticleSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'articleId' => ['required', 'integer', 'exists:articles,id'],
-            'sectionId' => ['required', 'integer', 'exists:sections,id'],
+            'articleId' => 'required|integer|exists:articles,id',
         ];
     }
 }

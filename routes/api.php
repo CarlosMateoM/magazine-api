@@ -38,7 +38,7 @@ Route::prefix('v1')->group(function () {
         Route::get('articles/most-viewed',          [ArticleViewController::class, 'show']);
         
         Route::apiResource('users',                 UserController::class);
-        Route::apiResource('files',                 FileController::class);
+        //Route::apiResource('files',                 FileController::class);
         Route::apiResource('authors',               AuthorController::class);
         Route::apiResource('sections',              SectionController::class);
         
@@ -50,7 +50,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('categories',            CategoryController::class);
         Route::apiResource('departments',           DepartmentController::class);
         Route::apiResource('municipalities',        MunicipalityController::class);
-        Route::apiResource('articles.sections',     ArticleSectionController::class);
+        Route::apiResource('sections.articles',     ArticleSectionController::class)->only(['index', 'store', 'destroy']);
         
         
         Route::post('articles/{article}/view',      [ArticleViewController::class, 'store']);  
