@@ -26,7 +26,6 @@ class AzureBlobService
         $fileType = $file->getMimeType();
 
         $date = gmdate('D, d M Y H:i:s T', time());
-        
 
         if ($file instanceof UploadedFile) {
             $fileContent = file_get_contents($file->getPathname());
@@ -66,7 +65,6 @@ class AzureBlobService
 
     private function generateSharedKey($verb, $date, $blobName, $fileSize, $fileType)
     {
-
         $canonicalizedHeaders = "x-ms-blob-type:BlockBlob\nx-ms-date:{$date}\nx-ms-version:2020-10-02";
         $canonicalizedResource = "/{$this->accountName}/{$this->containerName}/{$blobName}";
 

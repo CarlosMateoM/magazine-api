@@ -25,7 +25,7 @@ class FileService
                 'type'
             ]);
 
-        return $files->paginate(self::DEFAULT_PER_PAGE)
+        return $files->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
             ->appends($request->query());
     }
 
@@ -40,11 +40,11 @@ class FileService
         
         $file = new File();
 
-        $file->name = $request->name;
-        $file->hash = $fileData['hash'];
-        $file->url = $fileData['url'];
-        $file->type = explode('/', $file->getMimeType())[0];
-        $file->description = $request->description;
+        $file->name         = $request->name;
+        $file->hash         = $fileData['hash'];
+        $file->url          = $fileData['url'];
+        $file->type         = explode('/', $request->file('file')->getMimeType())[0];
+        $file->description  = $request->description;
 
         $file->save();
 

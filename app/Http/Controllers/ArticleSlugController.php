@@ -13,15 +13,13 @@ class ArticleSlugController extends Controller
     ) {}
 
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($slug)
+    public function __invoke($slug)
     {
         $article = $this->articleService->findArticleBySlug($slug);
 
         $this->authorize('showArticleSlug', $article);
-        
+
         return new ArticleResource($article);
     }
+
 }

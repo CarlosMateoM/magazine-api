@@ -57,6 +57,10 @@ class Article extends Model
         return $this->hasMany(ArticleAdvertisement::class);
     }
 
+    public function keywords(){
+        return $this->belongsToMany(Keyword::class);
+    }
+
     public function isPublished(){
         return $this->status === 'published';
     }

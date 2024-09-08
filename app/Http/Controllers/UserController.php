@@ -60,7 +60,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        $user->load('role', 'role.permissions', 'articles');
+
+        return response()->json(new UserResource($user));
     }
 
 

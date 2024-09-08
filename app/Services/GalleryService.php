@@ -29,7 +29,7 @@ class GalleryService
                 'created_at',
             ]);
 
-        return $galleries->paginate(self::DEFAULT_PER_PAGE)
+        return $galleries->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
             ->appends($request->query());
     }
 

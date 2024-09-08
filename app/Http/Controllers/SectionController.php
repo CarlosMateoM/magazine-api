@@ -7,7 +7,7 @@ use App\Http\Requests\UpdateSectionRequest;
 use App\Http\Resources\SectionResource;
 use App\Models\Section;
 use App\Services\SectionService;
-use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\Request;
 
 class SectionController extends Controller
 {

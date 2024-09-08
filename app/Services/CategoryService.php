@@ -18,10 +18,9 @@ class CategoryService
             ->allowedFilters('name')
             ->allowedIncludes('articles');
 
-        return $categories->paginate(self::DEFAULT_PER_PAGE)
+        return $categories->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
         ->appends($request->query());
     }
-
 
     public function createCategory(StoreCategoryRequest $request): Category
     {

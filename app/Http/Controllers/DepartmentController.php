@@ -17,7 +17,7 @@ class DepartmentController extends Controller
         private DepartmentService $departmentService
     )
     {
-        $this->authorizeResource(Department::class);
+        $this->authorizeResource(Department::class, 'department');
     }
 
     /**

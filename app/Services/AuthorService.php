@@ -22,7 +22,7 @@ class AuthorService
                 'articles'
             ]);
 
-        return $authors->paginate(self::DEFAULT_PER_PAGE)
+        return $authors->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
             ->appends($request->query());
     }
 
@@ -35,10 +35,10 @@ class AuthorService
     {
         $author = new Author();
 
-        $author->first_name = $request->firstName;
-        $author->last_name = $request->lastName;
-        $author->biography = $request->biography;
-        $author->file_id = $request->file['id'];
+        $author->first_name =   $request->input('firstName');
+        $author->last_name  =   $request->input('lastName');
+        $author->biography  =   $request->input('biography');
+        $author->file_id    =   $request->input('image.id');
 
         $author->save();
 
@@ -48,10 +48,10 @@ class AuthorService
     public function updateAuthor(UpdateAuthorRequest $request, Author $author): Author
     {
 
-        $author->first_name = $request->firstName;
-        $author->last_name = $request->lastName;
-        $author->biography = $request->biography;
-        $author->file_id = $request->file['id'];
+        $author->first_name =   $request->input('firstName');
+        $author->last_name  =   $request->input('lastName');
+        $author->biography  =   $request->input('biography');
+        $author->file_id    =   $request->input('image.id');
 
         $author->save();
 

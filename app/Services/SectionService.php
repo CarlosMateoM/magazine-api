@@ -9,7 +9,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class SectionService
 {
-
     private const DEFAULT_PER_PAGE = 10;
 
     public function getSections($request)
@@ -18,9 +17,8 @@ class SectionService
             ->allowedFilters('name')
             ->allowedSorts('name');
 
-        return $sections->paginate(
-            $request->input('per_page', self::DEFAULT_PER_PAGE)
-        )->appends($request->query());
+        return $sections->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
+            ->appends($request->query());
     }
 
     public function getSection(Section $section): Section

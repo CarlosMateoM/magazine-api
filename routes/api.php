@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ArticleKeywordController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
@@ -9,11 +10,11 @@ use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\ArticleSectionController;
 use App\Http\Controllers\ArticleSlugController;
 use App\Http\Controllers\ArticleViewController;
+use App\Http\Controllers\AuthenticatedUserController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\KeywordController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\UserController;
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,38 +28,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('v1')->group(function () { 
+Route::prefix('v1')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
-
-        Route::get('user', function (Request $request) {
-            return $request->user()->load('role');
-        });
-
-        Route::get('articles/most-viewed',          [ArticleViewController::class, 'show']);
         
+        Route::get('user',                          AuthenticatedUserController::class);
+        
+        Route::get('articles/slugs/{slug}',         ArticleSlugController::class);
+        Route::get('articles/most-viewed',          [ArticleViewController::class, 'show']);
+        Route::post('articles/{article}/view',      [ArticleViewController::class, 'store']);
+
         Route::apiResource('users',                 UserController::class);
-        //Route::apiResource('files',                 FileController::class);
+        Route::apiResource('files',                 FileController::class);
         Route::apiResource('authors',               AuthorController::class);
         Route::apiResource('sections',              SectionController::class);
-        
         Route::apiResource('articles',              ArticleController::class);
-
-        Route::get('articles/slugs/{slug}',         [ArticleSlugController::class, 'show']);
-        
+        Route::apiResource('keywords',              KeywordController::class);
         Route::apiResource('galleries',             GalleryController::class);
         Route::apiResource('categories',            CategoryController::class);
         Route::apiResource('departments',           DepartmentController::class);
         Route::apiResource('municipalities',        MunicipalityController::class);
-        Route::apiResource('sections.articles',     ArticleSectionController::class)->only(['index', 'store', 'destroy']);
-        
-        
-        Route::post('articles/{article}/view',      [ArticleViewController::class, 'store']);  
+        Route::apiResource('articles.keywords',     ArticleKeywordController::class)
+            ->only(['index', 'store', 'destroy']);
+        Route::apiResource('sections.articles',     ArticleSectionController::class)
+            ->only(['index', 'store', 'destroy']);
 
-    }); 
+    });
 });
-
-
-
-
-    

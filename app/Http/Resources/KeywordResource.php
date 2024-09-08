@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FileResource extends JsonResource
+class KeywordResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,8 @@ class FileResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'url' => $this->url,
             'name' => $this->name,
-            'hash' => $this->hash,
-            'type' => $this->type,
-            'description' => $this->description,
+            'articles' => ArticleResource::collection($this->whenLoaded('articles')),
         ];
     }
 }

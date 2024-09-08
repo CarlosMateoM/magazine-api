@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreDepartmentRequest extends FormRequest
+class StoreArticleKeywordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class StoreDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255'
+            'keywordId' => 'required|integer|exists:keywords,id',
         ];
     }
 }

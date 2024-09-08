@@ -24,7 +24,7 @@ class MunicipalityService
                 'department_id'
             ]);
 
-        return $municipalities->paginate(self::DEFAULT_PER_PAGE)
+        return $municipalities->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
             ->appends($request->query());
     }
 

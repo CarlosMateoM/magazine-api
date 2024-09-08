@@ -30,7 +30,9 @@ class ArticleResource extends JsonResource
             'municipality' => new MunicipalityResource($this->whenLoaded('municipality')),
             'image' => new FileResource($this->whenLoaded('file')), 
             'gallery' => GalleryResource::collection($this->whenLoaded('galleries')),
-            'advertisements' => ArticleAdvertisementResource::collection($this->whenLoaded('advertisements')),
+            //'advertisements' => ArticleAdvertisementResource::collection($this->whenLoaded('advertisements')),
+            'sections' => SectionResource::collection($this->whenLoaded('sections')),
+            'keywords' => KeywordResource::collection($this->whenLoaded('keywords')),
         ];
 
         if ($request->has('includeContent')) {

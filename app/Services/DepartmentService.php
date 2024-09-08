@@ -19,7 +19,7 @@ class DepartmentService
             ->allowedFilters('name')
             ->allowedIncludes('municipalities');
 
-        return $departments->paginate(self::DEFAULT_PER_PAGE)
+        return $departments->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
         ->appends($request->query());
     }
 

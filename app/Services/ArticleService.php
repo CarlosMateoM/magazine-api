@@ -24,6 +24,7 @@ class ArticleService
                 'file',
                 'category',
                 'sections',
+                'keywords',
                 'author.file',
                 'galleries.file',
                 'municipality.department',
@@ -50,6 +51,8 @@ class ArticleService
                 'author.file',
                 'category',
                 'municipality',
+                'sections',
+                'keywords',
                 'advertisements.file'
             ])
             ->allowedSorts([
@@ -63,7 +66,7 @@ class ArticleService
             $articles->where('status', ArticleStatus::PUBLISHED->value);
         }
 
-        return $articles->paginate(self::DEFAULT_PER_PAGE)
+        return $articles->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
             ->appends($request->query());
     }
 
@@ -73,6 +76,7 @@ class ArticleService
             'file',
             'category',
             'sections',
+            'keywords',
             'author.file',
             'galleries.file',
             'municipality.department',

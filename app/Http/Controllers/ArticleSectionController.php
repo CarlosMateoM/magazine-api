@@ -22,9 +22,9 @@ class ArticleSectionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Section $section)
+    public function index(Section $section, Request $request)
     {
-        $articles = $this->articleSectionService->getArticlesBySection($section);
+        $articles = $this->articleSectionService->getArticlesBySection($section, $request);
 
         return ArticleResource::collection($articles)->resource;
     }
@@ -36,7 +36,7 @@ class ArticleSectionController extends Controller
     {
         $this->articleSectionService->attachArticleToSection($section, $request);
 
-        $section->articles()->attach($request->article_id);
+        return response()->json(['message' => 'Article attached to section successfully'], 201);
     }
 
 
@@ -45,6 +45,8 @@ class ArticleSectionController extends Controller
      */
     public function destroy(Section $section, Article $article)
     {
-        
+        $this->articleSectionService->detachArticleFromSection($section, $article);
+
+        return response()->json(['message' => 'Article detached from section successfully'], 200);
     }
 }
