@@ -4,24 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Http\Resources\RoleResource;
 use App\Models\Role;
+use App\Services\RoleService;
+use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+
+    public function __construct(
+        private RoleService $roleService
+    ) {
+        $this->authorizeResource(Role::class, 'role');
+    }
+    
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $roles = $this->roleService->getRoles($request);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return RoleResource::collection($roles)->resource;
     }
 
     /**
@@ -29,7 +34,9 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
-        //
+        $role = $this->roleService->createRole($request);
+
+        return new RoleResource($role);
     }
 
     /**
@@ -37,15 +44,9 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        //
-    }
+        $role = $this->roleService->getRole($role);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Role $role)
-    {
-        //
+        return new RoleResource($role);
     }
 
     /**
@@ -53,7 +54,9 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        //
+        $role = $this->roleService->updateRole($request, $role);
+
+        return new RoleResource($role);
     }
 
     /**
@@ -61,6 +64,8 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        $this->roleService->deleteRole($role);
+
+        return response()->noContent();
     }
 }

@@ -14,12 +14,12 @@ class ArticleKeywordService
         return $article->keywords;
     }
 
-    public function attachKeywordToArticle(Article $article, StoreArticleKeywordRequest $request)
+    public function attachKeywordToArticle(Article $article, StoreArticleKeywordRequest $request): void
     {
         $article->keywords()->syncWithoutDetaching($request->input('keywordId'));
     }
 
-    public function detachKeywordFromArticle(Article $article, Keyword $keyword) 
+    public function detachKeywordFromArticle(Article $article, Keyword $keyword): void
     {
         $article->keywords()->detach($keyword->id);
     }

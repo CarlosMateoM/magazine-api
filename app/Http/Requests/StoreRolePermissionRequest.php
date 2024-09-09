@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RoleType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRolePermissionRequest extends FormRequest
@@ -11,7 +12,9 @@ class StoreRolePermissionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user->hasRole(
+            RoleType::ADMIN->value
+        );
     }
 
     /**
@@ -22,7 +25,7 @@ class StoreRolePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'permissionId' => 'required|exists:permissions,id',
         ];
     }
 }

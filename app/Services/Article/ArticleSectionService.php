@@ -31,12 +31,12 @@ class ArticleSectionService
             ->appends($request->query());
     }
 
-    public function attachArticleToSection(Section $section, StoreArticleSectionRequest $request)
+    public function attachArticleToSection(Section $section, StoreArticleSectionRequest $request): void
     {
         $section->articles()->syncWithoutDetaching($request->input('articleId'));
     }
 
-    public function detachArticleFromSection(Section $section, Article $article)
+    public function detachArticleFromSection(Section $section, Article $article): void
     {
         $section->articles()->detach($article->id);
     }

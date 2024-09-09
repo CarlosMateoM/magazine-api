@@ -13,6 +13,9 @@ use App\Http\Controllers\ArticleViewController;
 use App\Http\Controllers\AuthenticatedUserController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\KeywordController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +42,7 @@ Route::prefix('v1')->group(function () {
         Route::post('articles/{article}/view',      [ArticleViewController::class, 'store']);
 
         Route::apiResource('users',                 UserController::class);
+        Route::apiResource('roles',                 RoleController::class);
         Route::apiResource('files',                 FileController::class);
         Route::apiResource('authors',               AuthorController::class);
         Route::apiResource('sections',              SectionController::class);
@@ -47,7 +51,13 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('galleries',             GalleryController::class);
         Route::apiResource('categories',            CategoryController::class);
         Route::apiResource('departments',           DepartmentController::class);
+        Route::apiResource('permissions',           PermissionController::class);
         Route::apiResource('municipalities',        MunicipalityController::class);
+
+
+        Route::apiResource('roles.permissions',     RolePermissionController::class)
+            ->only(['index', 'store', 'destroy']);
+
         Route::apiResource('articles.keywords',     ArticleKeywordController::class)
             ->only(['index', 'store', 'destroy']);
         Route::apiResource('sections.articles',     ArticleSectionController::class)
