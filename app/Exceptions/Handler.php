@@ -27,4 +27,36 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Render an exception into an HTTP response.
+     */
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        if($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        if($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return response()->json(['message' => 'Resource not found.'], 404);
+        }
+
+        if($exception instanceof \Illuminate\Validation\ValidationException) {
+            return response()->json(['message' => 'The given data was invalid.', 'errors' => $exception->errors()], 422);
+        }
+
+        if($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+            return response()->json(['message' => 'Method not allowed.'], 405);
+        }
+
+        if($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return response()->json(['message' => 'Not found.'], 404);
+        }
+
+        return parent::render($request, $exception);
+    }
 }
