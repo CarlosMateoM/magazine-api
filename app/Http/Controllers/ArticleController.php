@@ -6,7 +6,7 @@ use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
-use App\Services\ArticleService;
+use App\Services\Article\ArticleService;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller

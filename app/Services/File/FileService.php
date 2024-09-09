@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\File;
 
 use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Article;
 
 use App\Http\Requests\StoreArticleKeywordRequest;
 use App\Models\Article;

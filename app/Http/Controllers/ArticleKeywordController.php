@@ -6,7 +6,7 @@ use App\Http\Requests\StoreArticleKeywordRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\Keyword;
-use App\Services\ArticleKeywordService;
+use App\Services\Article\ArticleKeywordService;
 
 class ArticleKeywordController extends Controller
 {

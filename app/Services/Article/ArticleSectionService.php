@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Article;
 
 use App\Http\Requests\StoreArticleSectionRequest;
 use App\Models\Article;

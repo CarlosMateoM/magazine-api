@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\File;
 
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\ImageManager;

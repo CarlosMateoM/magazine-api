@@ -7,7 +7,7 @@ use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;
 use App\Http\Resources\FileResource;
 use App\Models\File;
-use App\Services\FileService;
+use App\Services\File\FileService;
 use Illuminate\Http\Request;
 
 

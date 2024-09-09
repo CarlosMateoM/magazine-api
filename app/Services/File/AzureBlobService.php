@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\File;
 
 use Illuminate\Http\UploadedFile;
 

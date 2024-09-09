@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Article;
 
 use App\Enums\ArticleStatus;
 use App\Enums\RoleType;
@@ -127,7 +127,7 @@ class ArticleService
         return $article;
     }
 
-    public function deleteArticle(Article $article)
+    public function deleteArticle(Article $article): void
     {
         $article->delete();
     }

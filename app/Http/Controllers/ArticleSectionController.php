@@ -6,7 +6,7 @@ use App\Http\Requests\StoreArticleSectionRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\Section;
-use App\Services\ArticleSectionService;
+use App\Services\Article\ArticleSectionService;
 use Illuminate\Http\Request;
 
 class ArticleSectionController extends Controller
