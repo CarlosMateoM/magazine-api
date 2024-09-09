@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Article;
+use App\Services\Article\ArticleService;
 use Illuminate\Console\Command;
 
 class PublishScheduledArticles extends Command
@@ -24,17 +24,10 @@ class PublishScheduledArticles extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(
+        ArticleService $articleService
+    )
     {
-        $articles = Article::where('status', 'draft')
-            ->where('published_at', '<=', now())
-            ->get();
-
-        $articles->each(function ($article) {
-            $article->update(['status' => 'published']);
-            $this->info('Published article: ' . $article->title);
-        });
-
-        $this->info('Published ' . $articles->count() . ' scheduled articles');
+        $articleService->publishScheduledArticles();
     }
 }

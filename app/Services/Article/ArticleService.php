@@ -35,6 +35,13 @@ class ArticleService
         return $article;
     }
 
+    public function publishScheduledArticles(): void
+    {
+        Article::where('status', ArticleStatus::DRAFT)
+            ->where('published_at', '<=', now())
+            ->update(['status' => ArticleStatus::PUBLISHED]);
+    }
+
     public function getArticles(Request $request)
     {
         $articles = QueryBuilder::for(Article::class)
@@ -134,7 +141,7 @@ class ArticleService
 
 
     /**
-     * If the article is an opinion article, the author's image will be used
+     * If is an opinion article, the author's image will be used
      * as the cover and for SEO purposes. In other cases, the image must be 
      * present in the database and included in the request.
      */
