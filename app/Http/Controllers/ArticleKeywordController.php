@@ -47,7 +47,7 @@ class ArticleKeywordController extends Controller
     {
         $this->articleKeywordService->detachKeywordFromArticle($article, $keyword);
 
-        return response()->json(['message' => 'Keyword detached from article successfully'], 200);
+        return response()->noContent();
     }
 
 }

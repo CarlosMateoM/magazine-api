@@ -65,6 +65,6 @@ class FileController extends Controller
     {
         $this->fileService->deleteFile($file);
 
-        return response()->json(['deleted_id' => $file->id ], 204);
+        return response()->noContent();
     }
 }

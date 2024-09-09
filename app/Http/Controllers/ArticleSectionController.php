@@ -47,6 +47,6 @@ class ArticleSectionController extends Controller
     {
         $this->articleSectionService->detachArticleFromSection($section, $article);
 
-        return response()->json(['message' => 'Article detached from section successfully'], 200);
+        return response()->noContent();
     }
 }

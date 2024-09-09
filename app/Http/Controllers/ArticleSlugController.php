@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ArticleResource;
-use App\Services\ArticleService;
+use App\Services\Article\ArticleService;
 
 class ArticleSlugController extends Controller
 {

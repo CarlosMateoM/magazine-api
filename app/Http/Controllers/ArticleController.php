@@ -65,6 +65,6 @@ class ArticleController extends Controller
     {
         $this->articleService->deleteArticle($article);
 
-        return response()->json(['deleted_id' => $article->id], 204);
+        return response()->noContent();
     }
 }

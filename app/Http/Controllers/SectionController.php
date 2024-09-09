@@ -66,6 +66,6 @@ class SectionController extends Controller
     {
         $this->sectionService->deleteSection($section);
 
-        return response()->json(null, 204);
+        return response()->noContent();
     }
 }

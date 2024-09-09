@@ -67,6 +67,6 @@ class DepartmentController extends Controller
     {
         $this->departmentService->deleteDepartment($department);
 
-        return response()->json(['deleted_id' => $department->id], 204);
+        return response()->noContent();
     }
 }

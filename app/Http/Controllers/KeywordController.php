@@ -66,6 +66,6 @@ class KeywordController extends Controller
     {
         $this->keywordService->deleteKeyword($keyword);
 
-        return response()->json(['deleted_id' => $keyword->id], 204);
+        return response()->noContent();
     }
 }

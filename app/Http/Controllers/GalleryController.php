@@ -66,6 +66,6 @@ class GalleryController extends Controller
     {
         $this->galleryService->deleteGallery($gallery);
 
-        return response()->json(['deleted_id' => $gallery->id], 204);
+        return response()->noContent();
     }
 }

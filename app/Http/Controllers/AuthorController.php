@@ -66,6 +66,6 @@ class AuthorController extends Controller
     {
         $this->authorService->deleteAuthor($author);
 
-        return response()->json(['deleted_id' => $author->id], 204);
+        return response()->noContent();
     }
 }

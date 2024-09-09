@@ -71,6 +71,6 @@ class MunicipalityController extends Controller
     {
         $this->municipalityService->deleteMunicipality($municipality);
 
-        return response()->json(['deleted_id' => $municipality->id], 204);
+        return response()->noContent();
     }
 }
