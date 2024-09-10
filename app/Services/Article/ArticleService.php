@@ -15,7 +15,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class ArticleService
 {
-    private const DEFAULT_PER_PAGE = 10;
 
     public function findArticleBySlug(string $slug): Article
     {
@@ -73,7 +72,7 @@ class ArticleService
             $articles->where('status', ArticleStatus::PUBLISHED->value);
         }
 
-        return $articles->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
+        return $articles->paginate($request->input('per_page', config('constants.default_per_page')))
             ->appends($request->query());
     }
 

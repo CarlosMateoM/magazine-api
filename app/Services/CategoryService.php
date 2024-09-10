@@ -10,7 +10,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class CategoryService
 {
-    private const DEFAULT_PER_PAGE = 10;
 
     public function getCategories(Request $request)
     {
@@ -18,8 +17,8 @@ class CategoryService
             ->allowedFilters('name')
             ->allowedIncludes('articles');
 
-        return $categories->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
-        ->appends($request->query());
+        return $categories->paginate($request->input('per_page', config('constants.default_per_page')))
+            ->appends($request->query());
     }
 
     public function createCategory(StoreCategoryRequest $request): Category

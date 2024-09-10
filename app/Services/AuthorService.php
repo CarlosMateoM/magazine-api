@@ -11,8 +11,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 class AuthorService
 {
 
-    private const DEFAULT_PER_PAGE = 10;
-
     public function getAuthors(Request $request)
     {
         $authors = QueryBuilder::for(Author::class)
@@ -22,7 +20,7 @@ class AuthorService
                 'articles'
             ]);
 
-        return $authors->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
+        return $authors->paginate($request->input('per_page', config('constants.default_per_page')))
             ->appends($request->query());
     }
 

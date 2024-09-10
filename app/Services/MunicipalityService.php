@@ -24,7 +24,7 @@ class MunicipalityService
                 'department_id'
             ]);
 
-        return $municipalities->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
+        return $municipalities->paginate($request->input('per_page', config('constants.default_per_page')))
             ->appends($request->query());
     }
 

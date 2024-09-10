@@ -20,7 +20,7 @@ class RoleService
                 'permissions'
             ]);
 
-        return $roles->paginate($request->input('per_page', 10))
+        return $roles->paginate($request->input('per_page', config('constants.default_per_page')))
             ->appends($request->query());
     }
 

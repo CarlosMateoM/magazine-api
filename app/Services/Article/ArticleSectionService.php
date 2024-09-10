@@ -11,8 +11,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ArticleSectionService
 {
 
-    private const DEFAULT_PER_PAGE = 10;
-
     public function getArticlesBySection(Section $section, Request $request)
     {
         $articles = QueryBuilder::for(Article::class)
@@ -27,7 +25,7 @@ class ArticleSectionService
                 $query->where('sections.id', $section->id);
             });
 
-        return $articles->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
+        return $articles->paginate($request->input('per_page', config('constants.default_per_page')))
             ->appends($request->query());
     }
 

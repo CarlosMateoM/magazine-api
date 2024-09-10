@@ -10,8 +10,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 class GalleryService
 {
 
-    private const DEFAULT_PER_PAGE = 10;
-
     public function getGalleries($request)
     {
         $galleries = QueryBuilder::for(Gallery::class)
@@ -29,7 +27,7 @@ class GalleryService
                 'created_at',
             ]);
 
-        return $galleries->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
+        return $galleries->paginate($request->input('per_page', config('constants.default_per_page')))
             ->appends($request->query());
     }
 

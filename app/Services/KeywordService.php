@@ -19,7 +19,7 @@ class KeywordService
         $keywords = QueryBuilder::for(Keyword::class)
         ->allowedFilters('name');
 
-        return $keywords->paginate($request->input('per_page', self::DEFAULT_PER_PAGE))
+        return $keywords->paginate($request->input('per_page', config('constants.default_per_page')))
         ->appends($request->query());
     }
 
