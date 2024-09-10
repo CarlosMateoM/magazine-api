@@ -36,7 +36,7 @@ class ArticleService
 
     public function publishScheduledArticles(): void
     {
-        Article::where('status', ArticleStatus::DRAFT)
+        Article::where('status', ArticleStatus::SCHEDULED)
             ->where('published_at', '<=', now())
             ->update(['status' => ArticleStatus::PUBLISHED]);
     }
