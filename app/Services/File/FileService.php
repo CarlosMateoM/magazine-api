@@ -11,8 +11,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 class FileService
 {
 
-    
-
     public function __construct(
         private FileStorageService $fileStorageService
     ) {}
@@ -36,15 +34,19 @@ class FileService
 
     public function createFile(StoreFileRequest $request): File
     {    
-        $fileData = $this->fileStorageService->saveFile($request->file('file'));
+        $uuid = uniqid();
+
+        $uploadedFile = $request->file('file');
+
+        $url = $this->fileStorageService->saveFile($uploadedFile, $uuid);
         
         $file = new File();
 
-        $file->name         = $request->name;
-        $file->hash         = $fileData['hash'];
-        $file->url          = $fileData['url'];
-        $file->type         = explode('/', $request->file('file')->getMimeType())[0];
-        $file->description  = $request->description;
+        $file->name         = $request->input('name');
+        $file->hash         = $uuid;
+        $file->url          = $url;
+        $file->type         = explode('/', $uploadedFile->getMimeType())[0];
+        $file->description  = $request->input('description');
 
         $file->save();
 

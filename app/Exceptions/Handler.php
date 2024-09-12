@@ -57,6 +57,10 @@ class Handler extends ExceptionHandler
             return response()->json(['message' => 'Not found.'], 404);
         }
 
+        if($exception instanceof \App\Exceptions\FileServiceException) {
+            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
+        }
+
         return parent::render($request, $exception);
     }
 }

@@ -2,29 +2,36 @@
 
 namespace App\Services\File;
 
-use Intervention\Image\Drivers\Imagick\Driver;
+use App\Exceptions\FileServiceException;
+use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 
 class ImageProcessingService
 {
-    private $manager;
+    private const DEFAULT_QUALITY = 85;
+    private const MIME_TYPE = 'image/webp';
 
-    public function __construct()
-    {
-        $this->manager = new ImageManager(new Driver());
-    }
+    public function __construct(
+        private ImageManager $manager
+    ) {}
 
-    public function isImage($file)
+    public function isImage(UploadedFile $file): bool
     {
         return strpos($file->getMimeType(), 'image/') === 0;
     }
 
-    public function processImage($file, $quality = 85)
+    public function processImage(UploadedFile $file, int $quality = self::DEFAULT_QUALITY): ProcessedFile
     {
-        $image = $this->manager->read($file->getContent());
+        try {
+            $image = $this->manager->read($file);
 
-        $processedImage = $image->toWebp($quality);
+            $processedImage = $image->toWebp($quality);
 
-        return new ProcessedFile($processedImage, 'image/webp');
+            return new ProcessedFile($processedImage, self::MIME_TYPE);
+
+        } catch (\Exception $e) {
+
+            throw FileServiceException::failedToProcessImage($e);
+        }
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Services\File;
 
+use Illuminate\Http\UploadedFile;
+
 class FileStorageService
 {
     private $azureBlobService;
@@ -15,13 +17,11 @@ class FileStorageService
         $this->imageProcessingService = $imageProcessingService;
     }
 
-    public function saveFile($file)
+    public function saveFile(UploadedFile $file, string $blobName): string
     {
-        $blobName = uniqid();
-
         if ($this->imageProcessingService->isImage($file)) {
-            $file = $this->imageProcessingService->processImage($file);
             $blobName .= '.webp';
+            $file = $this->imageProcessingService->processImage($file);
         } else {
             $blobName .= '.' . $file->getClientOriginalExtension();
         }

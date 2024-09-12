@@ -57,9 +57,10 @@ return [
         ],
         
         'azure' => [
-            'account_name' => env('AZURE_STORAGE_ACCOUNT'),
             'account_key' => env('AZURE_STORAGE_KEY'),
+            'account_name' => env('AZURE_STORAGE_ACCOUNT'),
             'container_name' => env('AZURE_STORAGE_CONTAINER'),
+            'x_ms_version' => '2020-10-02'
         ]
 
     ],
