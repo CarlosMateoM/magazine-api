@@ -23,10 +23,10 @@ class StoreFileRequest extends FormRequest
     {
         return [
             'file' => [
-                'required',
                 'file',
-                'mimes:jpeg,jpg,png,gif,webp,mp4,mov,avi,mkv,flv',
+                'required',
                 'max:102400',
+                'mimes:jpeg,jpg,png,gif,webp,mp4,mov,avi,mkv,flv',
             ],
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',

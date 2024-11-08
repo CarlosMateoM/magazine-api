@@ -22,7 +22,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id'
+        'role_id',
+        'file_id',
+        'biography',
+        'is_public_author',
+        'is_locked_account',
     ];
 
     /**
@@ -45,8 +49,14 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function role(){
+    public function role()
+    {
         return $this->belongsTo(Role::class);
+    }
+
+    public function file()
+    {
+        return $this->belongsTo(File::class);
     }
 
     public function hasAnyRole(array $roles): bool
@@ -56,12 +66,13 @@ class User extends Authenticatable
         return in_array($role, $roles);
     }
 
-    public function hasRole(string $role){
-        Log::info([$this->role->name, $role]);
+    public function hasRole(string $role)
+    {
         return $this->role->name === $role;
     }
 
-    public function hasPermission(Permission $permission){
+    public function hasPermission(Permission $permission)
+    {
         return $this->role->permissions->contains($permission);
     }
 }

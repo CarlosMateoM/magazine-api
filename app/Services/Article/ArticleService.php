@@ -9,6 +9,7 @@ use App\Http\Requests\StoreArticleRequest;
 use App\Models\Article;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -20,13 +21,12 @@ class ArticleService
         $article = Article::where('slug', $slug)
             ->with([
                 'file',
+                'user.file',
                 'category',
                 'sections',
                 'keywords',
-                'author.file',
                 'galleries.file',
                 'municipality.department',
-                'advertisements.advertisement.files.file'
             ])
             ->firstOrFail();
 
@@ -40,22 +40,45 @@ class ArticleService
             ->update(['status' => ArticleStatus::PUBLISHED]);
     }
 
+    public function getMostViewedArticles(int $limit)
+    {
+        return Cache::remember('most_viewed_articles', now()->addMinutes(20), function () use ($limit) {
+            return Article::with(['category','municipality.department', 'file', 'user.file'])
+                ->where('status', ArticleStatus::PUBLISHED)
+                ->orderByDesc('views', 'desc')
+                ->limit($limit)
+                ->get();
+        });
+    }
+
     public function getArticles(Request $request)
     {
         $articles = QueryBuilder::for(Article::class)
             ->allowedFilters([
                 'user.id',
                 'title',
-                'published_at',
+                'user.name',
                 'category.name',
-                AllowedFilter::exact('sections.name'),
+                'municipality.name',
                 AllowedFilter::exact('status'),
+                
+                AllowedFilter::callback('published_at', function ($query, $value, $property) {
+                    
+                    if (is_array($value)) {
+                        $query->whereBetween('published_at', $value);
+                    } else {
+                        $query->whereDate('published_at', $value);
+                    }
+
+                    
+                }),
+                AllowedFilter::exact('sections.name'),
             ])
             ->allowedIncludes([
                 'file',
-                'author.file',
+                'user.file',
                 'category',
-                'municipality',
+                'municipality.department',
                 'sections',
                 'keywords',
                 'advertisements.file'
@@ -82,7 +105,7 @@ class ArticleService
             'category',
             'sections',
             'keywords',
-            'author.file',
+            'user.file',
             'galleries.file',
             'municipality.department',
             'advertisements.advertisement.files.file'
@@ -94,13 +117,13 @@ class ArticleService
         $article = new Article();
 
         $article->title             = $request->input('title');
-        $article->status            = $request->input('status');
+        $article->status            = $request->input('status', ArticleStatus::DRAFT);
         $article->summary           = $request->input('summary');
-        $article->content           = $request->input('content');
-        $article->user_id           = $request->user()->id;
+        $article->content           = $request->input('content', '');
         $article->published_at      = $request->input('publishedAt');
         $article->slug              = Str::slug($request->input('title'));
-        $article->author_id         = $request->input('author.id');
+        $article->user_id           = $request->input('user.id');
+        $article->file_id           = $request->input('file.id');
         $article->category_id       = $request->input('category.id');
         $article->municipality_id   = $request->input('municipality.id');
 
@@ -118,7 +141,8 @@ class ArticleService
         $article->content           = $request->input('content');
         $article->published_at      = $request->input('publishedAt');
         $article->slug              = Str::slug($request->input('title'));
-        $article->author_id         = $request->input('author.id');
+        $article->user_id           = $request->input('user.id');
+        $article->file_id           = $request->input('file.id');
         $article->category_id       = $request->input('category.id');
         $article->municipality_id   = $request->input('municipality.id');
 
@@ -132,4 +156,3 @@ class ArticleService
         $article->delete();
     }
 }
-

@@ -15,29 +15,24 @@ class ArticleResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-       
-
         $data = [
-            'id' => $this->id,
-            'title' => $this->title,
-            'slug' => $this->slug,
-            'status' =>$this->status,
-            'summary' => $this->summary,
-            'views' => $this->views,
-            'publishedAt' =>$this->published_at,
-            'category' => new CategoryResource($this->whenLoaded('category')),
-            'author' => new AuthorResource($this->whenLoaded('author')),
-            'municipality' => new MunicipalityResource($this->whenLoaded('municipality')),
-            'image' => new FileResource($this->whenLoaded('file')), 
-            'gallery' => GalleryResource::collection($this->whenLoaded('galleries')),
-            //'advertisements' => ArticleAdvertisementResource::collection($this->whenLoaded('advertisements')),
-            'sections' => SectionResource::collection($this->whenLoaded('sections')),
-            'keywords' => KeywordResource::collection($this->whenLoaded('keywords')),
+            'id'            => $this->id,
+            'title'         => $this->title,
+            'slug'          => $this->slug,
+            'status'        => $this->status,
+            'summary'       => $this->summary,
+            'views'         => $this->views,
+            'publishedAt'   => $this->published_at,
+            'content'       => $this->content,
+            'file'          => new FileResource($this->whenLoaded('file')),
+            'user'          => new UserResource($this->whenLoaded('user')),
+            'category'      => new CategoryResource($this->whenLoaded('category')),
+            'municipality'  => new MunicipalityResource($this->whenLoaded('municipality')),
+            'gallery'       => GalleryResource::collection($this->whenLoaded('galleries')),
+            'sections'      => SectionResource::collection($this->whenLoaded('sections')),
+            'keywords'      => KeywordResource::collection($this->whenLoaded('keywords')),
         ];
 
-        if ($request->has('includeContent')) {
-            $data['content'] = $this->content;
-        }
 
 
         return $data;

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ArticleStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreArticleRequest extends FormRequest
 {
@@ -28,11 +30,19 @@ class StoreArticleRequest extends FormRequest
         'content' => '',
         'summary' => '',
         'image.id' => '',
+
+
         */
 
         return [
-            'title' => 'string|required|max:255|unique:articles,title',
-            'author.id' => 'required|exists:authors,id',
+            'title' => 'required|string|max:255|unique:articles,title',
+            'status' => [Rule::enum(ArticleStatus::class)],
+            'summary' => 'string',
+            'content' => 'nullable|string',
+            //'publishedAt' => '',
+
+            'user.id' => 'required|exists:users,id',
+            'file.id' => 'required|exists:files,id',
             'category.id' => 'required|exists:categories,id',
             'municipality.id' => 'required|exists:municipalities,id',
         ];

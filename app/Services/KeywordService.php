@@ -11,13 +11,12 @@ use Spatie\QueryBuilder\QueryBuilder;
 class KeywordService
 {
 
-    private const DEFAULT_PER_PAGE = 10;
 
 
     public function getKeywords(Request $request)
     {
         $keywords = QueryBuilder::for(Keyword::class)
-        ->allowedFilters('name');
+            ->allowedFilters('name');
 
         return $keywords->paginate($request->input('per_page', config('constants.default_per_page')))
         ->appends($request->query());

@@ -20,7 +20,7 @@ class UserController extends Controller
      }
 
 
-    public function index()
+    public function index(Request $request)
     {
         $query = QueryBuilder::for(User::class)
             ->allowedFilters([
@@ -34,7 +34,17 @@ class UserController extends Controller
                 'articles',
             ]);
 
-        return response()->json(UserResource::collection($query->get()));
+            if(!$request->user()->hasRole('admin')) {
+                
+                $query->where('is_public_author', true);
+
+                $query->where('id', '!=', $request->user()->id);
+            }
+            
+
+        $users = UserResource::collection($query->paginate(10)->appends($request->query()));
+
+        return response()->json($users->resource);
     }
 
 
@@ -45,10 +55,15 @@ class UserController extends Controller
     {
         $user = new User();
 
-        $user->name = $request->firstName . ' ' .  $request->lastName;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->role_id = 2;
+        $user->name                 = $request->input('name');
+        $user->email                = $request->input('email');
+        $user->biography            = $request->input('biography');
+        $user->password             = bcrypt($request->input('password'));
+        $user->is_public_author     = $request->input('is_public_author', false);
+        $user->is_locked_account    = $request->input('is_locked_account', false);
+        
+        $user->file_id              = $request->input('file.id');
+        $user->role_id              = $request->input('role.id');
         
         $user->save();
 

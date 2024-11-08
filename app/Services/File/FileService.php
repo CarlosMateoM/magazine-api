@@ -38,8 +38,8 @@ class FileService
 
         $uploadedFile = $request->file('file');
 
-        $url = $this->fileStorageService->saveFile($uploadedFile, $uuid);
-        
+        $url = $this->fileStorageService->saveFile($uploadedFile, $uuid); 
+
         $file = new File();
 
         $file->name         = $request->input('name');
@@ -49,6 +49,7 @@ class FileService
         $file->description  = $request->input('description');
 
         $file->save();
+
 
         return $file;
     }

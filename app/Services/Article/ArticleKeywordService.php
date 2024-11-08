@@ -16,7 +16,7 @@ class ArticleKeywordService
 
     public function attachKeywordToArticle(Article $article, StoreArticleKeywordRequest $request): void
     {
-        $article->keywords()->syncWithoutDetaching($request->input('keywordId'));
+        $article->keywords()->syncWithoutDetaching($request->input('keywords'));
     }
 
     public function detachKeywordFromArticle(Article $article, Keyword $keyword): void

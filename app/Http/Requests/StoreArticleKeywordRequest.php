@@ -22,7 +22,7 @@ class StoreArticleKeywordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'keywordId' => 'required|integer|exists:keywords,id',
+            'keywords' => ['required', 'array'],
         ];
     }
 }

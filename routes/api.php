@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleKeywordController;
-use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FileController;
@@ -34,17 +33,15 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
-        
+
         Route::get('user',                          AuthenticatedUserController::class);
-        
-        Route::get('articles/slugs/{slug}',         ArticleSlugController::class);
-        Route::get('articles/most-viewed',          [ArticleViewController::class, 'show']);
-        Route::post('articles/{article}/view',      [ArticleViewController::class, 'store']);
+        Route::get('articles/{slug}/slugs',         ArticleSlugController::class);
+        Route::get('articles/most-viewed',          [ArticleViewController::class, 'index']);
+        Route::post('articles/{article}/views',     [ArticleViewController::class, 'store']);
 
         Route::apiResource('users',                 UserController::class);
         Route::apiResource('roles',                 RoleController::class);
         Route::apiResource('files',                 FileController::class);
-        Route::apiResource('authors',               AuthorController::class);
         Route::apiResource('sections',              SectionController::class);
         Route::apiResource('articles',              ArticleController::class);
         Route::apiResource('keywords',              KeywordController::class);
@@ -60,6 +57,6 @@ Route::prefix('v1')->group(function () {
             ->only(['index', 'store', 'destroy']);
         Route::apiResource('sections.articles',     ArticleSectionController::class)
             ->only(['index', 'store', 'destroy']);
-
+        
     });
 });

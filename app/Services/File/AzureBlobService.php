@@ -35,13 +35,11 @@ class AzureBlobService
     {
         try {
 
-            $date = gmdate('D, d M Y H:i:s T', time());
+            $date           = gmdate('D, d M Y H:i:s T', time());
 
-            $fileSize = $file->getSize();
-
-            $fileType = $file->getMimeType();
-
-            $fileContent = $file->getContent();
+            $fileSize       = $file->getSize();
+            $fileType       = $file->getMimeType();
+            $fileContent    = $file->getContent();
 
             $url = "https://{$this->accountName}.blob.core.windows.net/{$this->containerName}/{$blobName}";
 

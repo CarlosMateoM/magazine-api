@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ArticleStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateArticleRequest extends FormRequest
 {
@@ -21,16 +23,17 @@ class UpdateArticleRequest extends FormRequest
      */
     public function rules(): array
     {
-        //'image.id' => 'required|integer|exists:files,id',
-
         return [
-            'title' => 'required|string',
-            'content' => 'nullable|string',
-            'status' => 'required|string|in:DRAFT,PUBLISHED,UNPUBLISHED,draft,published,unpublished',
-            'summary' => 'nullable|string',
-            'author.id' => 'required|integer|exists:authors,id',
-            'category.id'  => 'required|integer|exists:categories,id',
-            'municipality.id' =>  'required|integer|exists:municipalities,id'
+
+            'title'             => 'required|string|max:255|unique:articles,title,' . $this->route('article')->id,
+            'status'            => Rule::enum(ArticleStatus::class),
+            'content'           => 'string',
+            'summary'           => 'string',
+            
+            'user.id'           => 'required|integer|exists:users,id',
+            'file.id'           => 'required|integer|exists:files,id',
+            'category.id'       => 'required|integer|exists:categories,id',
+            'municipality.id'   => 'required|integer|exists:municipalities,id'
         ];
     }
 }

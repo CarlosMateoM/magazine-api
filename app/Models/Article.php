@@ -14,10 +14,9 @@ class Article extends Model
         'slug',
         'content',
         'status',
-        'user_id',
         'summary',
         'published_at',
-        'author_id',
+        'user_id',
         'category_id',
         'file_id',
         'municipality_id',
@@ -28,10 +27,6 @@ class Article extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }   
-
-    public function author(){
-        return $this->belongsTo(Author::class);
-    }
 
     public function sections(){
         return $this->belongsToMany(Section::class);
