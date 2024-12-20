@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
@@ -14,10 +16,10 @@ class UserController extends Controller
      * Display a listing of the resource.
      */
 
-     public function __construct()
-     {
+    public function __construct()
+    {
         $this->authorizeResource(User::class, 'user');
-     }
+    }
 
 
     public function index(Request $request)
@@ -34,13 +36,13 @@ class UserController extends Controller
                 'articles',
             ]);
 
-            if(!$request->user()->hasRole('admin')) {
-                
-                $query->where('is_public_author', true);
+        if (!$request->user()->hasRole('admin')) {
 
-                $query->where('id', '!=', $request->user()->id);
-            }
-            
+            $query->where('is_public_author', true);
+
+            $query->where('id', '!=', $request->user()->id);
+        }
+
 
         $users = UserResource::collection($query->paginate(10)->appends($request->query()));
 
@@ -57,17 +59,14 @@ class UserController extends Controller
 
         $user->name                 = $request->input('name');
         $user->email                = $request->input('email');
-        $user->biography            = $request->input('biography');
-        $user->password             = bcrypt($request->input('password'));
-        $user->is_public_author     = $request->input('is_public_author', false);
-        $user->is_locked_account    = $request->input('is_locked_account', false);
-        
-        $user->file_id              = $request->input('file.id');
+        $user->password             = $request->input('password');
         $user->role_id              = $request->input('role.id');
-        
+        $user->file_id              = $request->input('file.id', null);
+        $user->is_locked_account    = $request->input('is_locked_account', false);
+
         $user->save();
 
-        return response()->json(new UserResource($user), 201);
+        return new UserResource($user);
     }
 
     /**
@@ -75,7 +74,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user->load('role', 'role.permissions', 'articles');
+        $user->load('role', 'role.permissions');
 
         return response()->json(new UserResource($user));
     }
@@ -84,9 +83,29 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+
+        if (!Hash::check($request->input('old_password'), $user->password)) {
+            return response()->json([
+                'message' => 'Ha ocurrido un error, revise los datos e intente nuevamente',
+                'errors' => [
+                    'old_password' => ['contraseña incorrecta'],
+                ],
+            ], 422);
+        }
+
+        $user->name                 = $request->input('name', $user->name);
+        $user->email                = $request->input('email', $user->email);
+        $user->file_id              = $request->input('file_id', $user->file_id);
+
+        if ($request->filled('password')) {
+            $user->password         = $request->input('password');
+        }
+
+        $user->save();
+
+        return new UserResource($user);
     }
 
     /**

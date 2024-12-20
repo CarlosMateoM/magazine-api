@@ -1,0 +1,3 @@
+Eliminar los campos que se han pasado de la tabla usuarios a autores
+
+Modificar la relación de articles para que referencie a authors en lugar de users

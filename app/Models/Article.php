@@ -24,8 +24,8 @@ class Article extends Model
 
     protected $dates = ['published_at'];
 
-    public function user(){
-        return $this->belongsTo(User::class);
+    public function author(){
+        return $this->belongsTo(Author::class);
     }   
 
     public function sections(){
@@ -36,8 +36,8 @@ class Article extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function file(){
-        return $this->belongsTo(File::class);
+    public function coverImage(){
+        return $this->belongsTo(File::class, 'file_id');
     }
 
     public function municipality(){

@@ -19,9 +19,15 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->enum('status', ['draft', 'published', 'unpublished'])->default('draft');    
             $table->date('published_at')->nullable();
-            $table->foreignId('file_id')->nullable()->constrained('files');
-            $table->foreignId('category_id')->nullable()->constrained('categories');
-            $table->foreignId('municipality_id')->nullable()->constrained('municipalities');
+
+            $table->foreignId('author_id')
+                    ->constrained('authors');   
+            $table->foreignId('file_id')
+                    ->nullable()->constrained('files');
+            $table->foreignId('category_id')
+                    ->nullable()->constrained('categories');
+            $table->foreignId('municipality_id')
+                    ->nullable()->constrained('municipalities');
             $table->timestamps();
         });
     }

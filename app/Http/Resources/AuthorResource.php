@@ -15,13 +15,11 @@ class AuthorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'firstName' => $this->first_name,
-            'lastName' => $this->last_name,
-            'biography' => $this->biography,
-            'articlesCount' => $this->articles_count,
-            'articles' => ArticleResource::collection($this->whenLoaded('articles')),
-            'image' => new FileResource($this->whenLoaded('file')),
+            'id'            => $this->id,
+            'name'          => $this->user->name,
+            'biography'     => $this->biography,
+            'image'         => new FileResource($this->user->image),
+            'articles'      => ArticleResource::collection($this->whenLoaded('articles')),
         ];
     }
 }

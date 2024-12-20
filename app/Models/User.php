@@ -24,8 +24,6 @@ class User extends Authenticatable
         'password',
         'role_id',
         'file_id',
-        'biography',
-        'is_public_author',
         'is_locked_account',
     ];
 
@@ -54,10 +52,33 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function file()
+    public function image()
     {
-        return $this->belongsTo(File::class);
+        return $this->belongsTo(File::class, 'file_id');
     }
+
+    public function author()
+    {
+        return $this->hasOne(Author::class);
+    }   
+
+
+    public function loadRoleRelation()
+    {
+        switch ($this->role->name) {
+            case 'writer':
+                return $this->load('author');
+            default:
+                return $this;
+        }
+    }
+
+
+
+
+
+
+
 
     public function hasAnyRole(array $roles): bool
     {

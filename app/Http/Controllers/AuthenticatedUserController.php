@@ -13,7 +13,11 @@ class AuthenticatedUserController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $user = $request->user()->load('role');
+        $user = $request->user();
+
+        $user->load('role', 'image');
+
+        $user->loadRoleRelation();
 
         return new UserResource($user);
     }

@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->foreignId('user_id')->nullable()->constrained();
+        Schema::create('authors', function (Blueprint $table) {
+            $table->id();
+            $table->text('biography')->nullable();
+            $table->boolean('is_public')->default(false);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->dropColumn('user_id');
-        });
+        Schema::dropIfExists('authors');
     }
 };

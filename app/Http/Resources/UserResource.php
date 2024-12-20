@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'role' => new RoleResource($this->whenLoaded('role')),
-            'file' => new FileResource($this->whenLoaded('file')),
+            'image' => new FileResource($this->whenLoaded('image')),
         ];  
     }
 }

@@ -55,7 +55,7 @@ class ArticleService
     {
         $articles = QueryBuilder::for(Article::class)
             ->allowedFilters([
-                'user.id',
+                'author.id',
                 'title',
                 'user.name',
                 'category.name',
@@ -75,10 +75,6 @@ class ArticleService
                 AllowedFilter::exact('sections.name'),
             ])
             ->allowedIncludes([
-                'file',
-                'user.file',
-                'category',
-                'municipality.department',
                 'sections',
                 'keywords',
                 'advertisements.file'
@@ -88,6 +84,7 @@ class ArticleService
                 'published_at',
                 'created_at'
             ])
+            ->with(['author.user.image', 'category', 'municipality.department', 'coverImage'])
             ->defaultSort('-created_at');
 
         if ($request->user()->hasRole(RoleType::READER->value)) {

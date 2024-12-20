@@ -10,6 +10,7 @@ use App\Http\Controllers\ArticleSectionController;
 use App\Http\Controllers\ArticleSlugController;
 use App\Http\Controllers\ArticleViewController;
 use App\Http\Controllers\AuthenticatedUserController;
+use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\KeywordController;
 use App\Http\Controllers\PermissionController;
@@ -40,6 +41,7 @@ Route::prefix('v1')->group(function () {
         Route::post('articles/{article}/views',     [ArticleViewController::class, 'store']);
 
         Route::apiResource('users',                 UserController::class);
+        Route::apiResource('authors',               AuthorController::class);
         Route::apiResource('roles',                 RoleController::class);
         Route::apiResource('files',                 FileController::class);
         Route::apiResource('sections',              SectionController::class);
