@@ -23,28 +23,16 @@ class StoreArticleRequest extends FormRequest
      */
     public function rules(): array
     {
-        /*
-        remove to improve flexibility of the request and validate in business logic
-
-        todo: add nullable to the fields that are not required in database
-        'content' => '',
-        'summary' => '',
-        'image.id' => '',
-
-
-        */
-
+        
         return [
-            'title' => 'required|string|max:255|unique:articles,title',
-            'status' => [Rule::enum(ArticleStatus::class)],
-            'summary' => 'string',
-            'content' => 'nullable|string',
-            //'publishedAt' => '',
-
-            'user.id' => 'required|exists:users,id',
-            'file.id' => 'required|exists:files,id',
-            'category.id' => 'required|exists:categories,id',
-            'municipality.id' => 'required|exists:municipalities,id',
+            'title'             => 'required|string|max:255|unique:articles,title',
+            'status'            => ['required', Rule::enum(ArticleStatus::class)],
+            'summary'           => 'required|string',
+            'published_at'      => 'required|date_format:Y-m-dTH:i',
+            'file_id'           => 'required|exists:files,id',
+            'author_id'         => 'required|exists:authors,id',
+            'category_id'       => 'required|exists:categories,id',
+            'municipality_id'   => 'required|exists:municipalities,id',
         ];
     }
 }

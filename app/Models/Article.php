@@ -16,9 +16,9 @@ class Article extends Model
         'status',
         'summary',
         'published_at',
-        'user_id',
-        'category_id',
         'file_id',
+        'author_id',
+        'category_id',
         'municipality_id',
     ];
 

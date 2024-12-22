@@ -20,12 +20,12 @@ class ArticleService
     {
         $article = Article::where('slug', $slug)
             ->with([
-                'file',
-                'user.file',
                 'category',
                 'sections',
                 'keywords',
+                'coverImage',
                 'galleries.file',
+                'author.user.image',
                 'municipality.department',
             ])
             ->firstOrFail();
@@ -57,21 +57,18 @@ class ArticleService
             ->allowedFilters([
                 'author.id',
                 'title',
-                'user.name',
-                'category.name',
-                'municipality.name',
                 AllowedFilter::exact('status'),
-                
+                AllowedFilter::partial('category', 'category.name'),
+                AllowedFilter::partial('author', 'author.user.name'),
+                AllowedFilter::partial('municipality', 'municipality.name'),
                 AllowedFilter::callback('published_at', function ($query, $value, $property) {
-                    
                     if (is_array($value)) {
                         $query->whereBetween('published_at', $value);
                     } else {
-                        $query->whereDate('published_at', $value);
+                        $query->whereDate('published_at', $value);  
                     }
-
-                    
                 }),
+
                 AllowedFilter::exact('sections.name'),
             ])
             ->allowedIncludes([
@@ -114,15 +111,17 @@ class ArticleService
         $article = new Article();
 
         $article->title             = $request->input('title');
-        $article->status            = $request->input('status', ArticleStatus::DRAFT);
-        $article->summary           = $request->input('summary');
-        $article->content           = $request->input('content', '');
-        $article->published_at      = $request->input('publishedAt');
         $article->slug              = Str::slug($request->input('title'));
-        $article->user_id           = $request->input('user.id');
-        $article->file_id           = $request->input('file.id');
-        $article->category_id       = $request->input('category.id');
-        $article->municipality_id   = $request->input('municipality.id');
+
+        $article->status            = $request->input('status', ArticleStatus::DRAFT);//added
+        $article->summary           = $request->input('summary');//added
+        $article->published_at      = $request->input('publishedAt');//added
+        $article->content           = $request->input('content', '<p>content</p>');//missing
+        
+        $article->file_id           = $request->input('file_id');
+        $article->author_id         = $request->input('author_id');
+        $article->category_id       = $request->input('category_id');
+        $article->municipality_id   = $request->input('municipality_id');
 
         $article->save();
 
@@ -132,13 +131,13 @@ class ArticleService
     public function updateArticle(UpdateArticleRequest $request, Article $article): Article
     {
 
-        $article->title             = $request->input('title');
-        $article->status            = $request->input('status');
-        $article->summary           = $request->input('summary');
-        $article->content           = $request->input('content');
-        $article->published_at      = $request->input('publishedAt');
+        $article->title             = $request->input('title', $article->title);
+        $article->status            = $request->input('status', $article->status);
+        $article->summary           = $request->input('summary', $article->summary);
+        $article->content           = $request->input('content', $article->content);
+        $article->published_at      = $request->input('publishedAt', $article->published_at);
         $article->slug              = Str::slug($request->input('title'));
-        $article->user_id           = $request->input('user.id');
+        // add author id
         $article->file_id           = $request->input('file.id');
         $article->category_id       = $request->input('category.id');
         $article->municipality_id   = $request->input('municipality.id');

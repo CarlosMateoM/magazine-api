@@ -10,6 +10,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class AuthorService
@@ -19,7 +20,9 @@ class AuthorService
     public function getAuthors(Request $request)
     {
         return QueryBuilder::for(Author::class)
-            ->allowedFilters('name')
+            ->allowedFilters([
+                AllowedFilter::partial('name', 'user.name'),
+            ])
             ->allowedIncludes('articles', 'image')
             ->with(['user.image'])
             ->paginate($request->input('per_page', config('constants.default_per_page')));
