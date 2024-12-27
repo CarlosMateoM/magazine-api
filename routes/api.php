@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleContentController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleKeywordController;
 use App\Http\Controllers\CategoryController;
@@ -39,6 +40,7 @@ Route::prefix('v1')->group(function () {
         Route::get('articles/{slug}/slugs',         ArticleSlugController::class);
         Route::get('articles/most-viewed',          [ArticleViewController::class, 'index']);
         Route::post('articles/{article}/views',     [ArticleViewController::class, 'store']);
+        Route::put('articles/{article}/content',    [ArticleContentController::class, 'update']);
 
         Route::apiResource('users',                 UserController::class);
         Route::apiResource('authors',               AuthorController::class);

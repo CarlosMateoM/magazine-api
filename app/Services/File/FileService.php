@@ -21,7 +21,8 @@ class FileService
             ->allowedFilters([
                 'name',
                 'type'
-            ]);
+            ])
+            ->orderBy('created_at', 'desc');
 
         return $files->paginate($request->input('per_page', config('constants.default_per_page')))
             ->appends($request->query());

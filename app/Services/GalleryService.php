@@ -42,9 +42,9 @@ class GalleryService
     {
         $gallery = new Gallery();
         
-        $gallery->file_id = $request->fileId;
-        $gallery->caption = $request->caption;  
-        $gallery->article_id = $request->articleId;
+        $gallery->caption       = $request->caption;  
+        $gallery->file_id       = $request->fileId;
+        $gallery->article_id    = $request->articleId;
 
         $gallery->save();
 

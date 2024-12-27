@@ -7,9 +7,11 @@ use App\Enums\RoleType;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Requests\StoreArticleRequest;
 use App\Models\Article;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -43,7 +45,7 @@ class ArticleService
     public function getMostViewedArticles(int $limit)
     {
         return Cache::remember('most_viewed_articles', now()->addMinutes(20), function () use ($limit) {
-            return Article::with(['category','municipality.department', 'file', 'user.file'])
+            return Article::with(['category', 'municipality.department', 'file', 'user.file'])
                 ->where('status', ArticleStatus::PUBLISHED)
                 ->orderByDesc('views', 'desc')
                 ->limit($limit)
@@ -65,7 +67,7 @@ class ArticleService
                     if (is_array($value)) {
                         $query->whereBetween('published_at', $value);
                     } else {
-                        $query->whereDate('published_at', $value);  
+                        $query->whereDate('published_at', $value);
                     }
                 }),
 
@@ -108,24 +110,39 @@ class ArticleService
 
     public function createArticle(StoreArticleRequest $request): Article
     {
-        $article = new Article();
+        try {
 
-        $article->title             = $request->input('title');
-        $article->slug              = Str::slug($request->input('title'));
+            DB::beginTransaction();
 
-        $article->status            = $request->input('status', ArticleStatus::DRAFT);//added
-        $article->summary           = $request->input('summary');//added
-        $article->published_at      = $request->input('publishedAt');//added
-        $article->content           = $request->input('content', '<p>content</p>');//missing
-        
-        $article->file_id           = $request->input('file_id');
-        $article->author_id         = $request->input('author_id');
-        $article->category_id       = $request->input('category_id');
-        $article->municipality_id   = $request->input('municipality_id');
+            $article = new Article();
 
-        $article->save();
+            $article->title             = $request->input('title');
+            $article->slug              = Str::slug($request->input('title'));
 
-        return $article;
+            $article->status            = $request->input('status', ArticleStatus::DRAFT); //added
+            $article->summary           = $request->input('summary');
+            $article->published_at      = $request->input('published_at');
+            $article->content           = $request->input('content', '<p>content</p>'); //missing
+
+            $article->file_id           = $request->input('file_id');
+            $article->author_id         = $request->input('author_id');
+            $article->category_id       = $request->input('category_id');
+            $article->municipality_id   = $request->input('municipality_id');
+
+            $article->save();
+
+
+            if($request->filled('keywords')) {
+                $article->keywords()->sync($request->input('keywords'));
+            }
+
+            DB::commit();
+
+            return $article;
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function updateArticle(UpdateArticleRequest $request, Article $article): Article
@@ -150,5 +167,13 @@ class ArticleService
     public function deleteArticle(Article $article): void
     {
         $article->delete();
+    }
+
+    public function updateArticleContent(Request $request, Article $article): Article
+    {
+        $article->content = $request->input('content', $article->content);
+        $article->save();
+
+        return $article;
     }
 }
