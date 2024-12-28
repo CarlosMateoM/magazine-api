@@ -16,12 +16,12 @@ class MunicipalityService
     public function getMunicipalities(Request $request)
     {
         $municipalities = QueryBuilder::for(Municipality::class)
-            ->allowedIncludes([
-                'department'
-            ])
             ->allowedFilters([
                 'name',
                 'department_id'
+            ])
+            ->with([
+                'department'
             ]);
 
         return $municipalities->paginate($request->input('per_page', config('constants.default_per_page')))
