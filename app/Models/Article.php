@@ -22,8 +22,6 @@ class Article extends Model
         'municipality_id',
     ];
 
-    protected $dates = ['published_at'];
-
     public function author(){
         return $this->belongsTo(Author::class);
     }   
