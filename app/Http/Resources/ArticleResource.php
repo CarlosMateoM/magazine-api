@@ -21,19 +21,19 @@ class ArticleResource extends JsonResource
             'slug'          => $this->slug,
             'status'        => $this->status,
             'summary'       => $this->summary,
-            'views'         => $this->views,
-            'publishedAt'   => $this->published_at,
+            'published_at'  => $this->published_at,
             'content'       => $this->content,
-            'coverImage'    => new FileResource($this->whenLoaded('coverImage')),
+            'cover_image'   => new FileResource($this->whenLoaded('coverImage')),
             'author'        => new AuthorResource($this->whenLoaded('author')),
             'category'      => new CategoryResource($this->whenLoaded('category')),
             'municipality'  => new MunicipalityResource($this->whenLoaded('municipality')),
             'gallery'       => GalleryResource::collection($this->whenLoaded('galleries')),
             'sections'      => SectionResource::collection($this->whenLoaded('sections')),
             'keywords'      => KeywordResource::collection($this->whenLoaded('keywords')),
+            'analitycs'     => [
+                'views'     => $this->views
+            ]
         ];
-
-
 
         return $data;
     }

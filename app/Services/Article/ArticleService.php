@@ -148,20 +148,37 @@ class ArticleService
     public function updateArticle(UpdateArticleRequest $request, Article $article): Article
     {
 
-        $article->title             = $request->input('title', $article->title);
-        $article->status            = $request->input('status', $article->status);
-        $article->summary           = $request->input('summary', $article->summary);
-        $article->content           = $request->input('content', $article->content);
-        $article->published_at      = $request->input('publishedAt', $article->published_at);
-        $article->slug              = Str::slug($request->input('title'));
-        // add author id
-        $article->file_id           = $request->input('file.id');
-        $article->category_id       = $request->input('category.id');
-        $article->municipality_id   = $request->input('municipality.id');
+        try {
 
-        $article->save();
+            DB::beginTransaction();
 
-        return $article;
+            $article->title             = $request->input('title');
+            $article->slug              = Str::slug($request->input('title'));
+
+            $article->status            = $request->input('status', ArticleStatus::DRAFT);
+            $article->summary           = $request->input('summary');
+            $article->published_at      = $request->input('published_at');
+            $article->content           = $request->input('content', '<p>content</p>');
+
+            $article->file_id           = $request->input('file_id');
+            $article->author_id         = $request->input('author_id');
+            $article->category_id       = $request->input('category_id');
+            $article->municipality_id   = $request->input('municipality_id');
+
+            $article->save();
+
+
+            if($request->filled('keywords')) {
+                $article->keywords()->sync($request->input('keywords'));
+            }
+
+            DB::commit();
+
+            return $article;
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function deleteArticle(Article $article): void

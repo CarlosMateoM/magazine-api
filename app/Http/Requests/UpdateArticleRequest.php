@@ -24,17 +24,15 @@ class UpdateArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-
             'title'             => 'required|string|max:255|unique:articles,title,' . $this->route('article')->id,
-            'status'            => Rule::enum(ArticleStatus::class),
-            'content'           => 'string',
-            'summary'           => 'string',
-            
-            'user.id'           => 'required|integer|exists:users,id',
-            'file.id'           => 'required|integer|exists:files,id',
-            'category.id'       => 'required|integer|exists:categories,id',
-            'municipality.id'   => 'required|integer|exists:municipalities,id'
+            'status'            => ['required', Rule::enum(ArticleStatus::class)],
+            'summary'           => 'required|string',
+            'published_at'      => 'required',
+            'file_id'           => 'required|exists:files,id',
+            'author_id'         => 'required|exists:authors,id',
+            'category_id'       => 'required|exists:categories,id',
+            'municipality_id'   => 'required|exists:municipalities,id',
+            'keywords'          => 'nullable|array|exists:keywords,id',
         ];
     }
 }
-
