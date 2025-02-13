@@ -158,7 +158,7 @@ class ArticleService
             $article->status            = $request->input('status', ArticleStatus::DRAFT);
             $article->summary           = $request->input('summary');
             $article->published_at      = $request->input('published_at');
-            $article->content           = $request->input('content', '<p>content</p>');
+            //$article->content           = $request->input('content', '<p>content</p>');
 
             $article->file_id           = $request->input('file_id');
             $article->author_id         = $request->input('author_id');
