@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
@@ -60,12 +61,11 @@ class UserController extends Controller
         $user->name                 = $request->input('name');
         $user->email                = $request->input('email');
         $user->password             = $request->input('password');
-        $user->role_id              = $request->input('role.id');
         $user->file_id              = $request->input('file.id', null);
         $user->is_locked_account    = $request->input('is_locked_account', false);
 
         $user->save();
-
+        //$user->assignRole();
         return new UserResource($user);
     }
 

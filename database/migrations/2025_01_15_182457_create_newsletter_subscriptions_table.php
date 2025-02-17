@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role_permission', function (Blueprint $table) {
-            //$table->id();
-            $table->foreignId('role_id')->constrained();
-            $table->foreignId('permission_id')->constrained();
-            //$table->timestamps();
-
-            $table->primary(['role_id', 'permission_id']);
+        Schema::create('newsletter_subscriptions', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 80);
+            $table->string('email', 255);
+            $table->boolean('isNotificationEnabled')->default(true);
+            $table->timestamps();
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('role_permission');
+        Schema::dropIfExists('newletter_suscriptions');
     }
 };
