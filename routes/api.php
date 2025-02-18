@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleKeywordController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FileController;
@@ -33,7 +34,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
 
+    // authentication routes
+    Route::middleware("web")->group(function () {
+        Route::post('login', [AuthController::class, 'login']);
+    });
+
     Route::middleware('auth:sanctum')->group(function () {
+
+        Route::delete('logout', [AuthController::class, 'logout']);
+
+        Route::get('prueba', [AuthController::class, function () {
+            return response()->json(["messaget"=>"hola mundo"]);
+        }]);
+
 
         Route::get('user',                          AuthenticatedUserController::class);
         Route::get('articles/{slug}/slugs',         ArticleSlugController::class);
@@ -59,6 +72,6 @@ Route::prefix('v1')->group(function () {
             ->only(['index', 'store', 'destroy']);
         Route::apiResource('sections.articles',     ArticleSectionController::class)
             ->only(['index', 'store', 'destroy']);
-        
+
     });
 });
