@@ -32,7 +32,9 @@ class ArticleResource extends JsonResource
             'keywords'      => KeywordResource::collection($this->whenLoaded('keywords')),
             'analitycs'     => [
                 'views'     => $this->views
-            ]
+            ],
+            'created_at'    => $this->created_at,
+            'updated_at'    => $this->updated_at,
         ];
 
         return $data;
