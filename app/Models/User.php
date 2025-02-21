@@ -3,10 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Mail\ResetPasswordMailable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -60,7 +62,7 @@ class User extends Authenticatable
     public function author()
     {
         return $this->hasOne(Author::class);
-    }   
+    }
 
 
     public function loadRoleRelation()
@@ -73,12 +75,10 @@ class User extends Authenticatable
         }
     }
 
-
-
-
-
-
-
+    public function sendPasswordResetNotification($token): void
+    {
+        Mail::to($this->email)->queue(new ResetPasswordMailable($this, $token));
+    }
 
     public function hasAnyRole(array $roles): bool
     {

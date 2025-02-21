@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return response()->json(['message' => 'Hello, World!']);
 });
+
+Route::get('/lab', function (){
+   return view('AuthenticationViews.password-reset-confirmation-email');
+});
