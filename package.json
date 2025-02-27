@@ -1,0 +1,18 @@
+{
+    "name": "magazine-api",
+    "version": "1.0.0",
+    "description": "",
+    "main": "vite.config.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CarlosMateoM/magazine-api.git"
+    },
+    "private": true,
+    "dependencies": {
+        "laravel-vite-plugin": "^1.2.0",
+        "vite": "^6.0.11"
+    }
+}

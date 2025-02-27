@@ -14,6 +14,7 @@ use App\Http\Controllers\AuthenticatedUserController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\KeywordController;
+use App\Http\Controllers\NewsLetterSubscriptionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
@@ -58,6 +59,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('departments',           DepartmentController::class);
         Route::apiResource('permissions',           PermissionController::class);
         Route::apiResource('municipalities',        MunicipalityController::class);
+        Route::apiResource('newsLetterSubscription', NewsLetterSubscriptionController::class);
+        Route::put('newsLetterSubscription/isNotificationEnable/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'updateStatusIsNotificationEnabled']);
 
         Route::apiResource('roles.permissions',     RolePermissionController::class)
             ->only(['index', 'store', 'destroy']);
@@ -65,6 +68,6 @@ Route::prefix('v1')->group(function () {
             ->only(['index', 'store', 'destroy']);
         Route::apiResource('sections.articles',     ArticleSectionController::class)
             ->only(['index', 'store', 'destroy']);
-        
+
     });
 });
