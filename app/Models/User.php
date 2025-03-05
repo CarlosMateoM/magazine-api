@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Mail\ResetPasswordMailable;
+use App\Notifications\EmailVerificationNotification;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -24,9 +25,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id',
         'file_id',
         'is_locked_account',
+    ];
+
+    protected $attributes = [
+        'is_locked_account' => false
     ];
 
     /**
@@ -80,6 +84,11 @@ class User extends Authenticatable
         Mail::to($this->email)->queue(new ResetPasswordMailable($this, $token));
     }
 
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new EmailVerificationNotification());
+    }
+
     public function hasAnyRole(array $roles): bool
     {
         $role = $this->role->name;
@@ -96,4 +105,6 @@ class User extends Authenticatable
     {
         return $this->role->permissions->contains($permission);
     }
+
+
 }

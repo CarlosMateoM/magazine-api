@@ -17,7 +17,7 @@ class RoleController extends Controller
     ) {
         $this->authorizeResource(Role::class, 'role');
     }
-    
+
 
     /**
      * Display a listing of the resource.

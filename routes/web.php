@@ -18,5 +18,6 @@ Route::get('/', function () {
 });
 
 Route::get('/lab', function (){
-   return view('AuthenticationViews.password-reset-confirmation-email');
+   return view('AuthenticationViews.email-verification-view');
 });
+

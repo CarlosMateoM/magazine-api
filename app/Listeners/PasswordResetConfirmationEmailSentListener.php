@@ -16,6 +16,9 @@ class PasswordResetConfirmationEmailSentListener implements ShouldQueue
     /**
      * Create the event listener.
      */
+
+    public $tries = 3;
+
     public function __construct()
     {
         //

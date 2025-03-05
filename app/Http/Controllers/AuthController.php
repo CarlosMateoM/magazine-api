@@ -5,18 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\VerifyEmailRequest;
 use App\Services\AuthService;
-use Dotenv\Exception\ValidationException;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Mockery\Exception;
-use PhpParser\Node\Expr\Throw_;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function __construct(public AuthService $authService)
     {
 
+    }
+
+    public function register(StoreUserRequest $request)
+    {
+        return $this->authService->registerNewUser($request->validated());
     }
 
     public function login(LoginRequest $request): \Illuminate\Http\JsonResponse|array
@@ -46,5 +51,18 @@ class AuthController extends Controller
     {
         $this->authService->resetPasswordAction($request->validated());
         return response()->json(['message' => 'Contraseña restablecida exitosamente'],200);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function verifyEmail(VerifyEmailRequest $request): \Illuminate\Http\JsonResponse
+    {
+        return $this->authService->emailVerification($request->validated());
+    }
+
+    public function resendEmail(Request $request): \Illuminate\Http\JsonResponse
+    {
+        return $this->authService->resendVerificationEmail($request);
     }
 }

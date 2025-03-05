@@ -36,20 +36,26 @@ Route::prefix('v1')->group(function () {
 
     // authentication routes
     Route::middleware("web")->group(function () {
-        Route::post('login', [AuthController::class, 'login']);
-        Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
-        Route::post('reset-password', [AuthController::class, 'resetPassword']);
+
+        Route::prefix('auth')->group(function () {
+            Route::post('register', [AuthController::class, 'register']);
+            Route::post('login', [AuthController::class, 'login']);
+            Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+            Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+            Route::post('reset-password', [AuthController::class, 'resetPassword']);
+            Route::post('/email/verify', [AuthController::class, 'verifyEmail']);
+            Route::post('/email/resend', [AuthController::class, 'resendEmail'])->middleware('auth:sanctum');
+
+        });
+
+
+    });
+
+    Route::middleware(['auth:sanctum', 'verified.api'])->group(function () {
+
         Route::get('prueba', [AuthController::class, function () {
             return response()->json(["messaget"=>"hola mundo"]);
         }]);
-    });
-
-    Route::middleware('auth:sanctum')->group(function () {
-
-        Route::delete('logout', [AuthController::class, 'logout']);
-
-
-
 
         Route::get('user',                          AuthenticatedUserController::class);
         Route::get('articles/{slug}/slugs',         ArticleSlugController::class);
