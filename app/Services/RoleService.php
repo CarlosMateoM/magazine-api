@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -56,5 +56,7 @@ class RoleService
     {
         $role->delete();
     }
+
+
 
 }
