@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Events\WelcomeMailNewsLetterSubscriptionEvent;
-use App\Listeners\SendWelcomeMailNewsLetterSubscriptionListener;
+use App\Events\SuccessfulPasswordResetEvent;
+use App\Listeners\PasswordResetConfirmationEmailSentListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -20,9 +20,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        WelcomeMailNewsLetterSubscriptionEvent::class => [
-            SendWelcomeMailNewsLetterSubscriptionListener::class
-        ]
+        SuccessfulPasswordResetEvent::class =>[
+            PasswordResetConfirmationEmailSentListener::class
+        ],
     ];
 
     /**

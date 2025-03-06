@@ -17,6 +17,7 @@ Route::get('/', function () {
     return response()->json(['message' => 'Hello, World!']);
 });
 
-Route::get('/emailLab', function (){
-    return view('mail.new-letter-mail.new-letter-mail-content');
+Route::get('/lab', function (){
+   return view('AuthenticationViews.email-verification-view');
 });
+

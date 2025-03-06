@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleKeywordController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FileController;
@@ -34,7 +35,28 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
 
-    Route::middleware('auth:sanctum')->group(function () {
+    // authentication routes
+    Route::middleware("web")->group(function () {
+
+        Route::prefix('auth')->group(function () {
+            Route::post('register', [AuthController::class, 'register']);
+            Route::post('login', [AuthController::class, 'login']);
+            Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+            Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+            Route::post('reset-password', [AuthController::class, 'resetPassword']);
+            Route::post('/email/verify', [AuthController::class, 'verifyEmail']);
+            Route::post('/email/resend', [AuthController::class, 'resendEmail'])->middleware('auth:sanctum');
+
+        });
+
+
+    });
+
+    Route::middleware(['auth:sanctum', 'verified.api'])->group(function () {
+
+        Route::get('prueba', [AuthController::class, function () {
+            return response()->json(["messaget"=>"hola mundo"]);
+        }]);
 
         Route::get('user',                          AuthenticatedUserController::class);
         Route::get('articles/{slug}/slugs',         ArticleSlugController::class);

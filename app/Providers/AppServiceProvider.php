@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Policies\ArticleSlugPolicy;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\ImageManager;
@@ -26,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('showArticleSlug', [ArticleSlugPolicy::class, 'show']);
+
     }
 }
