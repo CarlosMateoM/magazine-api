@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return response()->json(['message' => 'Hello, World!']);
 });
+
+Route::get('/emailLab', function (){
+    return view('mail.new-letter-mail.new-letter-mail-content');
+});
