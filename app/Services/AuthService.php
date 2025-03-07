@@ -67,7 +67,7 @@ class AuthService
 
     public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->tokens()->delete();
         return response()->json(["message" => "sesion cerrada exitosamente!"],200);
     }
 

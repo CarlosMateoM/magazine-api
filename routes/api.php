@@ -38,6 +38,8 @@ Route::prefix('v1')->group(function () {
     // authentication routes
     Route::middleware("web")->group(function () {
 
+        Route::post('/newsLetterSubscription', [NewsLetterSubscriptionController::class, 'store']);
+
         Route::prefix('auth')->group(function () {
             Route::post('register', [AuthController::class, 'register']);
             Route::post('login', [AuthController::class, 'login']);
@@ -46,9 +48,7 @@ Route::prefix('v1')->group(function () {
             Route::post('reset-password', [AuthController::class, 'resetPassword']);
             Route::post('/email/verify', [AuthController::class, 'verifyEmail']);
             Route::post('/email/resend', [AuthController::class, 'resendEmail'])->middleware('auth:sanctum');
-
         });
-
 
     });
 
@@ -75,8 +75,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('departments',           DepartmentController::class);
         Route::apiResource('permissions',           PermissionController::class);
         Route::apiResource('municipalities',        MunicipalityController::class);
-        Route::apiResource('newsLetterSubscription', NewsLetterSubscriptionController::class);
-        Route::put('newsLetterSubscription/isNotificationEnable/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'updateStatusIsNotificationEnabled']);
+        //Route::apiResource('newsLetterSubscription', NewsLetterSubscriptionController::class);
+        //Route::put('newsLetterSubscription/isNotificationEnable/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'updateStatusIsNotificationEnabled']);
 
         Route::apiResource('roles.permissions',     RolePermissionController::class)
             ->only(['index', 'store', 'destroy']);
