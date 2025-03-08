@@ -39,6 +39,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware("web")->group(function () {
 
         Route::post('/newsLetterSubscription', [NewsLetterSubscriptionController::class, 'store']);
+        Route::put('/newsLetterSubscription/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'update']);
 
         Route::prefix('auth')->group(function () {
             Route::post('register', [AuthController::class, 'register']);
@@ -62,6 +63,9 @@ Route::prefix('v1')->group(function () {
         Route::get('articles/{slug}/slugs',         ArticleSlugController::class);
         Route::get('articles/most-viewed',          [ArticleViewController::class, 'index']);
         Route::post('articles/{article}/views',     [ArticleViewController::class, 'store']);
+        Route::get('newsLetterSubscription', [NewsLetterSubscriptionController::class, 'index']);
+        Route::get('newsLetterSubscription/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'show']);
+        Route::delete('newsLetterSubscription/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'destroy']);
 
         Route::apiResource('users',                 UserController::class);
         Route::apiResource('authors',               AuthorController::class);
@@ -75,6 +79,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('departments',           DepartmentController::class);
         Route::apiResource('permissions',           PermissionController::class);
         Route::apiResource('municipalities',        MunicipalityController::class);
+
         //Route::apiResource('newsLetterSubscription', NewsLetterSubscriptionController::class);
         //Route::put('newsLetterSubscription/isNotificationEnable/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'updateStatusIsNotificationEnabled']);
 
