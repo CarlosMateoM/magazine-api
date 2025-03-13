@@ -19,6 +19,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +42,16 @@ Route::prefix('v1')->group(function () {
         Route::post('/newsLetterSubscription', [NewsLetterSubscriptionController::class, 'store']);
         Route::put('/newsLetterSubscription/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'update']);
 
+        Route::apiResource('subscriber', SubscriberController::class);
+        Route::get('/retrieveSubscriber', [SubscriberController::class, 'retrieveSubscriberInf']);
+
+        Route::middleware('auth.subscriber')->group(function () {
+            Route::get('prueba/{id}/{signature}', [AuthController::class, function () {
+
+                return response()->json(["message" => ">Acceso consedido. Estas en la ruta de pruebas"]);
+            }]);
+        });
+
         Route::prefix('auth')->group(function () {
             Route::post('register', [AuthController::class, 'register']);
             Route::post('login', [AuthController::class, 'login']);
@@ -54,10 +65,6 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware(['auth:sanctum', 'verified.api'])->group(function () {
-
-        Route::get('prueba', [AuthController::class, function () {
-            return response()->json(["messaget"=>"hola mundo"]);
-        }]);
 
         Route::get('user',                          AuthenticatedUserController::class);
         Route::get('articles/{slug}/slugs',         ArticleSlugController::class);
