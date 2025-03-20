@@ -59,8 +59,8 @@ class NewsLetterSubscriptionController extends Controller
         return $this->newsLetterSubscriptionService->deleteNewsLetterSubscription($newsLetterSubscription);
     }
 
-    public function updateStatusIsNotificationEnabled(UpdateStatusIsNotificationEnableRequest $request ,NewsLetterSubscription $newsLetterSubscription): NewsLetterSubscription
+    public function updateStatusIsNotificationEnabled(NewsLetterSubscription $newsLetterSubscription): NewsLetterSubscription
     {
-        return $this->newsLetterSubscriptionService->updateIsNotificationEnabled($request->validated(), $newsLetterSubscription);
+        return $this->newsLetterSubscriptionService->toggleNotificationService($newsLetterSubscription);
     }
 }

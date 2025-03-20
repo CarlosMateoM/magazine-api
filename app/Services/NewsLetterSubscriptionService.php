@@ -51,5 +51,16 @@ class NewsLetterSubscriptionService
         return $newsLetterSubscription;
     }
 
+    public function retrieveSubscriberInfByEmail(string $email)
+    {
+        return NewsLetterSubscription::where('email', $email)->firstOrFail();
+    }
+
+    public function toggleNotificationService (NewsLetterSubscription $subscriber){
+        $subscriber->isNotificationEnabled = !$subscriber->isNotificationEnabled;
+        $subscriber->save();
+        return $subscriber;
+    }
+
 
 }

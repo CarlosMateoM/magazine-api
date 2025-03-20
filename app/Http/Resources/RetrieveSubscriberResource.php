@@ -19,7 +19,8 @@ class RetrieveSubscriberResource extends JsonResource
             "name" => $this->name,
             "email" => $this->email,
             "isNotificationEnabled" => $this->isNotificationEnabled,
-            "signature" => $this->email_hashed
+            "signature" => $this->email_hashed,
+            "expires" => now()->addMinutes(60)->getTimestamp()
         ];
     }
 }

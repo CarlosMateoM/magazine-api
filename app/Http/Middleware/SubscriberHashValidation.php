@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\NewsLetterSubscription;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class SubscriberHashValidation
@@ -16,9 +17,18 @@ class SubscriberHashValidation
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $subscriberId = $request->route('id');
+        $subscriber = $request->route('newsLetterSubscription');
+        Log::error("acceso a emial", ["sub" => $subscriber]);
         $incomingSignature = $request->route('signature');
-        $subscriber = NewsLetterSubscription::find($subscriberId);
+        $expiresRequest = $request->route('expires');
+
+        if(now()->getTimestamp() > $expiresRequest) {
+            return response()->json(
+                [
+                    "error" => "expired url",
+                ]
+            , 410);
+        }
 
         if($subscriber == null){
             return response()->json(

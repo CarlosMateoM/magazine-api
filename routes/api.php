@@ -39,18 +39,24 @@ Route::prefix('v1')->group(function () {
     // authentication routes
     Route::middleware("web")->group(function () {
 
-        Route::post('/newsLetterSubscription', [NewsLetterSubscriptionController::class, 'store']);
-        Route::put('/newsLetterSubscription/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'update']);
 
-        Route::apiResource('subscriber', SubscriberController::class);
-        Route::get('/retrieveSubscriber', [SubscriberController::class, 'retrieveSubscriberInf']);
 
-        Route::middleware('auth.subscriber')->group(function () {
-            Route::get('prueba/{id}/{signature}', [AuthController::class, function () {
+        // subscriber-panel routes
+        Route::prefix('news_letter_subscription')->group(function () {
 
-                return response()->json(["message" => ">Acceso consedido. Estas en la ruta de pruebas"]);
-            }]);
+            Route::get('/retrieveSubscriber', [SubscriberController::class, 'retrieveSubscriberInf']);
+            Route::post("subscriber", [SubscriberController::class, 'store']);
+            Route::middleware('auth.subscriber')->group(function () {
+                Route::get('prueba/{newsLetterSubscription}/{signature}/{expires}', [AuthController::class, function () {
+                    return response()->json(["message" => ">Acceso consedido. Estas en la ruta de pruebas"]);
+                }]);
+                Route::get('subscriber/{newsLetterSubscription}/{signature}/{expires}', [SubscriberController::class, 'show']);
+                Route::put('subscriber/{newsLetterSubscription}/{signature}/{expires}', [SubscriberController::class, 'update']);
+                Route::put('subscriber/toggle_notification_service/{newsLetterSubscription}/{signature}/{expires}', [SubscriberController::class, 'notificationServiceToogle']);
+                Route::delete('subscriber/{newsLetterSubscription}/{signature}/{expires}', [SubscriberController::class, 'destroy']);
+            });
         });
+
 
         Route::prefix('auth')->group(function () {
             Route::post('register', [AuthController::class, 'register']);
@@ -71,8 +77,6 @@ Route::prefix('v1')->group(function () {
         Route::get('articles/most-viewed',          [ArticleViewController::class, 'index']);
         Route::post('articles/{article}/views',     [ArticleViewController::class, 'store']);
         Route::get('newsLetterSubscription', [NewsLetterSubscriptionController::class, 'index']);
-        Route::get('newsLetterSubscription/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'show']);
-        Route::delete('newsLetterSubscription/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'destroy']);
 
         Route::apiResource('users',                 UserController::class);
         Route::apiResource('authors',               AuthorController::class);
@@ -87,8 +91,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('permissions',           PermissionController::class);
         Route::apiResource('municipalities',        MunicipalityController::class);
 
-        //Route::apiResource('newsLetterSubscription', NewsLetterSubscriptionController::class);
-        //Route::put('newsLetterSubscription/isNotificationEnable/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'updateStatusIsNotificationEnabled']);
+        Route::apiResource('newsLetterSubscription', NewsLetterSubscriptionController::class);
+        Route::put('newsLetterSubscription/isNotificationEnable/{newsLetterSubscription}', [NewsLetterSubscriptionController::class, 'updateStatusIsNotificationEnabled']);
 
         Route::apiResource('roles.permissions',     RolePermissionController::class)
             ->only(['index', 'store', 'destroy']);
