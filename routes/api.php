@@ -46,6 +46,7 @@ Route::prefix('v1')->group(function () {
 
             Route::get('/retrieveSubscriber', [SubscriberController::class, 'retrieveSubscriberInf']);
             Route::post("subscriber", [SubscriberController::class, 'store']);
+
             Route::middleware('auth.subscriber')->group(function () {
                 Route::get('prueba/{newsLetterSubscription}/{signature}/{expires}', [AuthController::class, function () {
                     return response()->json(["message" => ">Acceso consedido. Estas en la ruta de pruebas"]);
