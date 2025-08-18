@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Income;
+use App\Observers\IncomeObserver;
 use App\Policies\ArticleSlugPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -18,13 +20,16 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ImageManager::class, function () {
             return new ImageManager(new Driver());
         });
+
+    
     }
 
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
+    { 
+
         Gate::define('showArticleSlug', [ArticleSlugPolicy::class, 'show']);
     }
 }

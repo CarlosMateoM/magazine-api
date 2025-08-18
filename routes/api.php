@@ -12,14 +12,22 @@ use App\Http\Controllers\ArticleSlugController;
 use App\Http\Controllers\ArticleViewController;
 use App\Http\Controllers\AuthenticatedUserController;
 use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ExpenseReportController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\IncomeReportController;
 use App\Http\Controllers\KeywordController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\SavingGoalController;
+use App\Http\Controllers\SavingGoalDepositController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SuscriberController;
 use App\Http\Controllers\UserController;
+use App\Models\Income;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -65,6 +73,23 @@ Route::prefix('v1')->group(function () {
             ->only(['index', 'store', 'destroy']);
         Route::apiResource('sections.articles',     ArticleSectionController::class)
             ->only(['index', 'store', 'destroy']);
+
+
+
+
+        Route::apiResource('incomes/total',         IncomeReportController::class)
+            ->only(['index']);
+
+        Route::apiResource('expenses/total',         ExpenseReportController::class)
+            ->only(['index']);
+
         
+
+        Route::apiResource('incomes',               IncomeController::class);
+        Route::apiResource('expenses',              ExpenseController::class);
+        Route::apiResource('saving-goals',          SavingGoalController::class);
+        Route::apiResource('saving-goal-deposits',  SavingGoalDepositController::class);
+        Route::apiResource('expense-categories',    ExpenseCategoryController::class);
+
     });
 });
