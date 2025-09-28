@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('hash');
             $table->string('url');
             $table->string('type');
+            $table->integer('size');
             $table->string('description');
+            $table->foreignId('user_id')->constrained()->onDelete('restrict');
             $table->timestamps();
         });
     }

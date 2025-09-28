@@ -17,6 +17,7 @@ class MunicipalityResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'departmentId' => $this->department_id,
             'department' => new DepartmentResource($this->whenLoaded('department')) ,
         ];
     }

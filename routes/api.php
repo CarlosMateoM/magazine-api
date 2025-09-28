@@ -25,6 +25,7 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SavingGoalController;
 use App\Http\Controllers\SavingGoalDepositController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\StorageController;
 use App\Http\Controllers\SuscriberController;
 use App\Http\Controllers\UserController;
 use App\Models\Income;
@@ -57,7 +58,12 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('users',                 UserController::class);
         Route::apiResource('authors',               AuthorController::class);
         Route::apiResource('roles',                 RoleController::class);
+
         Route::apiResource('files',                 FileController::class);
+
+        Route::get('/storage/usage',          [StorageController::class, 'usage']);
+
+
         Route::apiResource('sections',              SectionController::class);
         Route::apiResource('articles',              ArticleController::class);
         Route::apiResource('keywords',              KeywordController::class);

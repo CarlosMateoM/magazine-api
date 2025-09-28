@@ -24,10 +24,8 @@ class FileService
             ])
             ->orderBy('created_at', 'desc');
 
-        return $files->paginate(
-            $request->input('per_page', 
-            config('constants.default_per_page')))
-            ->appends($request->query());
+        return $files->paginate($request->input('per_page',config('constants.default_per_page')))
+            ->onEachSide(1);
     }
 
     public function getFile(File $file): File
@@ -36,12 +34,12 @@ class FileService
     }
 
     public function createFile(StoreFileRequest $request): File
-    {    
+    {
         $uuid = uniqid();
 
         $uploadedFile = $request->file('file');
 
-        $url = $this->fileStorageService->saveFile($uploadedFile, $uuid); 
+        $url = $this->fileStorageService->saveFile($uploadedFile, $uuid);
 
         $file = new File();
 
@@ -50,6 +48,8 @@ class FileService
         $file->url          = $url;
         $file->type         = explode('/', $uploadedFile->getMimeType())[0];
         $file->description  = $request->input('description');
+        $file->size         = $uploadedFile->getSize();
+        $file->user_id      = $request->user()->id;
 
         $file->save();
 
@@ -84,5 +84,4 @@ class FileService
     {
         $file->delete();
     }
-    
 }
