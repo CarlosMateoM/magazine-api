@@ -48,7 +48,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-   
+
 
     public function image()
     {
@@ -58,18 +58,10 @@ class User extends Authenticatable
     public function author()
     {
         return $this->hasOne(Author::class);
-    }   
-
-
-    public function loadRoleRelation()
-    {
-        switch ($this->role->name) {
-            case 'writer':
-                return $this->load('author');
-            default:
-                return $this;
-        }
     }
+
+
+ 
 
 
 
