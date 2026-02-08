@@ -15,7 +15,7 @@ class AuthenticatedUserController extends Controller
     {
         $user = $request->user();
 
-        $user->load('role', 'image');
+        $user->load('image');
 
         $user->loadRoleRelation();
 
