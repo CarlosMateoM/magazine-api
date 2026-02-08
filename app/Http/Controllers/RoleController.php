@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Resources\RoleResource;
-use App\Models\Role;
 use App\Services\RoleService;
 use Illuminate\Http\Request;
 
@@ -15,7 +14,7 @@ class RoleController extends Controller
     public function __construct(
         private RoleService $roleService
     ) {
-        $this->authorizeResource(Role::class, 'role');
+        //$this->authorizeResource(Role::class, 'role');
     }
     
 
@@ -42,9 +41,9 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Role $role)
+    public function show(int $id)
     {
-        $role = $this->roleService->getRole($role);
+        $role = $this->roleService->getRole($id);
 
         return new RoleResource($role);
     }

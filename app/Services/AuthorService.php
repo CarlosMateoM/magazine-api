@@ -76,11 +76,9 @@ class AuthorService
 
     public function updateAuthor(UpdateAuthorRequest $request, Author $author): Author
     {
-        $author->name       = $request->input('name');
-        $author->biography  = $request->input('biography');
-        $author->user_id    = $request->input('user_id');
-        $author->file_id    = $request->input('file_id');
-        $author->is_public  = $request->input('is_public', false);
+        $author->name       = $request->input('name', $author->name);
+        $author->biography  = $request->input('biography', $author->biography); 
+        $author->file_id    = $request->input('file_id', $author->file_id); 
 
         $author->save();
 

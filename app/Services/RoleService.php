@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
-use App\Models\Role;
+use App\Http\Requests\UpdateRoleRequest; 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class RoleService
@@ -24,12 +24,11 @@ class RoleService
             ->appends($request->query());
     }
 
-    public function getRole(Role $role): Role
+    public function getRole(int $id): Role
     {
-        return $role->load([
-            'users',
-            'permissions'
-        ]);
+        $role = Role::with('permissions')->findOrFail($id);
+
+        return $role;
     }
 
     public function createRole(StoreRoleRequest $request): Role

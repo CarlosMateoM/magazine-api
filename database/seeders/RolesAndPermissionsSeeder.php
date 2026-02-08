@@ -1,18 +1,18 @@
 <?php
-
 namespace Database\Seeders;
 
-use App\Models\Permission;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
-class PermissionSeeder extends Seeder
+class RolesAndPermissionsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
+        // Limpia cache de permisos
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        // 🔹 Lista de permisos
         $permissions = [
             // Artículos
             'read_articles',
@@ -81,9 +81,29 @@ class PermissionSeeder extends Seeder
             'delete_permissions',
         ];
 
+        // 🔹 Crear permisos (guard = web)
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
-        
+
+        // 🔹 Crear roles
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $writer = Role::firstOrCreate(['name' => 'writer', 'guard_name' => 'web']);
+
+        // 🔹 Asignar permisos a cada rol
+        $admin->givePermissionTo(Permission::all());
+
+        $writerPermissions = [
+            'read_articles',
+            'create_articles',
+            'update_articles',
+            'read_categories',
+            'read_sections',
+            'read_authors',
+        ];
+        $writer->syncPermissions($writerPermissions);
+
+        // Limpia cache de nuevo
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 }

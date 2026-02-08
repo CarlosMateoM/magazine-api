@@ -75,6 +75,8 @@ Route::prefix('v1')->group(function () {
 
         Route::apiResource('roles.permissions',     RolePermissionController::class)
             ->only(['index', 'store', 'destroy']);
+
+            
         Route::apiResource('articles.keywords',     ArticleKeywordController::class)
             ->only(['index', 'store', 'destroy']);
         Route::apiResource('sections.articles',     ArticleSectionController::class)

@@ -16,6 +16,7 @@ class AuthorResource extends JsonResource
     {
         return [
             'id'            => $this->id,
+            'email'         => $this->user->email,  
             'name'          => $this->user->name,
             'biography'     => $this->biography,
             'image'         => new FileResource($this->user->image),
