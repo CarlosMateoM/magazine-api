@@ -16,9 +16,7 @@ class AuthenticatedUserController extends Controller
         $user = $request->user();
 
         $user->load('image');
-
-        $user->loadRoleRelation();
-
+ 
         return new UserResource($user);
     }
 }
